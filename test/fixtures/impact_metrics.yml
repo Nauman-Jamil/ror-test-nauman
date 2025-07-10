@@ -1,0 +1,15 @@
+# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  budget_allocation: one
+  metric_name: MyString
+  metric_value: 9.99
+  metric_type: MyString
+  description: MyText
+
+two:
+  budget_allocation: two
+  metric_name: MyString
+  metric_value: 9.99
+  metric_type: MyString
+  description: MyText

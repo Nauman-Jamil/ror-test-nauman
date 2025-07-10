@@ -1,0 +1,212 @@
+<div class="px-4 sm:px-6 lg:px-8">
+  <div class="mb-6">
+    <div class="flex items-center justify-between">
+      <div>
+        <h1 class="text-3xl font-bold text-gray-900">Voting Results</h1>
+        <p class="mt-2 text-sm text-gray-700">All votes for <%= @budget_phase.name %></p>
+      </div>
+      <% if @budget_phase.can_vote? %>
+        <%= link_to "Cast New Vote", new_budget_budget_phase_budget_vote_path(@budget, @budget_phase), class: "inline-flex items-center px-4 py-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500" %>
+      <% end %>
+    </div>
+  </div>
+
+  <!-- Voting Statistics -->
+  <div class="bg-white shadow rounded-lg mb-6">
+    <div class="px-4 py-5 sm:p-6">
+      <h3 class="text-lg leading-6 font-medium text-gray-900 mb-4">Voting Statistics</h3>
+      
+      <div class="grid grid-cols-1 gap-5 sm:grid-cols-4">
+        <div class="bg-blue-50 overflow-hidden shadow rounded-lg">
+          <div class="p-5">
+            <div class="flex items-center">
+              <div class="flex-shrink-0">
+                <div class="w-8 h-8 bg-blue-500 rounded-full flex items-center justify-center">
+                  <span class="text-white text-sm font-medium">🗳️</span>
+                </div>
+              </div>
+              <div class="ml-5 w-0 flex-1">
+                <dl>
+                  <dt class="text-sm font-medium text-gray-500 truncate">Total Votes</dt>
+                  <dd class="text-lg font-medium text-gray-900"><%= @budget_votes.count %></dd>
+                </dl>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="bg-green-50 overflow-hidden shadow rounded-lg">
+          <div class="p-5">
+            <div class="flex items-center">
+              <div class="flex-shrink-0">
+                <div class="w-8 h-8 bg-green-500 rounded-full flex items-center justify-center">
+                  <span class="text-white text-sm font-medium">👥</span>
+                </div>
+              </div>
+              <div class="ml-5 w-0 flex-1">
+                <dl>
+                  <dt class="text-sm font-medium text-gray-500 truncate">Unique Voters</dt>
+                  <dd class="text-lg font-medium text-gray-900"><%= @budget_votes.select(:voter_email).distinct.count %></dd>
+                </dl>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="bg-yellow-50 overflow-hidden shadow rounded-lg">
+          <div class="p-5">
+            <div class="flex items-center">
+              <div class="flex-shrink-0">
+                <div class="w-8 h-8 bg-yellow-500 rounded-full flex items-center justify-center">
+                  <span class="text-white text-sm font-medium">💰</span>
+                </div>
+              </div>
+              <div class="ml-5 w-0 flex-1">
+                <dl>
+                  <dt class="text-sm font-medium text-gray-500 truncate">Total Allocated</dt>
+                  <dd class="text-lg font-medium text-gray-900">$<%= number_with_precision(@total_allocated, precision: 0) %></dd>
+                </dl>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="bg-purple-50 overflow-hidden shadow rounded-lg">
+          <div class="p-5">
+            <div class="flex items-center">
+              <div class="flex-shrink-0">
+                <div class="w-8 h-8 bg-purple-500 rounded-full flex items-center justify-center">
+                  <span class="text-white text-sm font-medium">📈</span>
+                </div>
+              </div>
+              <div class="ml-5 w-0 flex-1">
+                <dl>
+                  <dt class="text-sm font-medium text-gray-500 truncate">Avg per Vote</dt>
+                  <dd class="text-lg font-medium text-gray-900">$<%= number_with_precision(@average_per_vote, precision: 0) %></dd>
+                </dl>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Votes List -->
+  <div class="bg-white shadow rounded-lg">
+    <div class="px-4 py-5 sm:p-6">
+      <h3 class="text-lg leading-6 font-medium text-gray-900 mb-4">All Votes</h3>
+      
+      <% if @budget_votes.any? %>
+        <div class="overflow-hidden shadow ring-1 ring-black ring-opacity-5 md:rounded-lg">
+          <table class="min-w-full divide-y divide-gray-300">
+            <thead class="bg-gray-50">
+              <tr>
+                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Voter</th>
+                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Email</th>
+                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Allocations</th>
+                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Total Amount</th>
+                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Comments</th>
+                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Date</th>
+              </tr>
+            </thead>
+            <tbody class="bg-white divide-y divide-gray-200">
+              <% @budget_votes.each do |vote| %>
+                <tr class="hover:bg-gray-50">
+                  <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
+                    <%= vote.voter_name %>
+                  </td>
+                  <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                    <%= vote.voter_email %>
+                  </td>
+                  <td class="px-6 py-4 text-sm text-gray-500">
+                    <div class="space-y-1">
+                      <% vote.vote_allocations.each do |allocation| %>
+                        <div class="flex justify-between">
+                          <span class="text-gray-600"><%= allocation.budget_category.name %>:</span>
+                          <span class="font-medium">$<%= number_with_precision(allocation.amount, precision: 0) %></span>
+                        </div>
+                      <% end %>
+                    </div>
+                  </td>
+                  <td class="px-6 py-4 whitespace-nowrap text-sm font-bold text-gray-900">
+                    $<%= number_with_precision(vote.total_amount, precision: 0) %>
+                  </td>
+                  <td class="px-6 py-4 text-sm text-gray-500">
+                    <% if vote.comments.present? %>
+                      <div class="max-w-xs truncate" title="<%= vote.comments %>">
+                        <%= vote.comments %>
+                      </div>
+                    <% else %>
+                      <span class="text-gray-400">No comments</span>
+                    <% end %>
+                  </td>
+                  <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                    <%= vote.created_at.strftime("%B %d, %Y") %>
+                  </td>
+                </tr>
+              <% end %>
+            </tbody>
+          </table>
+        </div>
+
+        <!-- Pagination -->
+        <% if @budget_votes.respond_to?(:current_page) %>
+          <div class="mt-6">
+            <%= paginate @budget_votes %>
+          </div>
+        <% end %>
+      <% else %>
+        <div class="text-center py-8">
+          <div class="mx-auto h-12 w-12 text-gray-400">
+            <svg fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+          </div>
+          <h3 class="mt-2 text-sm font-medium text-gray-900">No votes yet</h3>
+          <p class="mt-1 text-sm text-gray-500">Be the first to vote in this phase!</p>
+          <% if @budget_phase.can_vote? %>
+            <div class="mt-6">
+              <%= link_to "Vote Now", new_budget_budget_phase_budget_vote_path(@budget, @budget_phase), class: "inline-flex items-center px-4 py-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500" %>
+            </div>
+          <% end %>
+        </div>
+      <% end %>
+    </div>
+  </div>
+
+  <!-- Category Summary -->
+  <% if @category_summary.any? %>
+    <div class="bg-white shadow rounded-lg mt-6">
+      <div class="px-4 py-5 sm:p-6">
+        <h3 class="text-lg leading-6 font-medium text-gray-900 mb-4">Category Summary</h3>
+        
+        <div class="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+          <% @category_summary.each do |category_name, data| %>
+            <div class="bg-gray-50 rounded-lg p-4">
+              <h4 class="text-lg font-medium text-gray-900 mb-2"><%= category_name %></h4>
+              <div class="space-y-2">
+                <div class="flex justify-between">
+                  <span class="text-sm text-gray-500">Total Votes:</span>
+                  <span class="font-medium">$<%= number_with_precision(data[:total_amount], precision: 0) %></span>
+                </div>
+                <div class="flex justify-between">
+                  <span class="text-sm text-gray-500">Vote Count:</span>
+                  <span class="font-medium"><%= data[:vote_count] %></span>
+                </div>
+                <div class="flex justify-between">
+                  <span class="text-sm text-gray-500">Average:</span>
+                  <span class="font-medium">$<%= number_with_precision(data[:average_amount], precision: 0) %></span>
+                </div>
+              </div>
+            </div>
+          <% end %>
+        </div>
+      </div>
+    </div>
+  <% end %>
+
+  <div class="mt-8">
+    <%= link_to "Back to Phase", budget_budget_phase_path(@budget, @budget_phase), class: "text-blue-600 hover:text-blue-900 text-sm font-medium" %>
+  </div>
+</div>

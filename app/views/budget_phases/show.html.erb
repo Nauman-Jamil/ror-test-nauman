@@ -1,0 +1,313 @@
+<div class="px-4 sm:px-6 lg:px-8">
+  <div class="mb-6">
+    <div class="flex items-center justify-between">
+      <div>
+        <h1 class="text-3xl font-bold text-gray-900"><%= @budget_phase.name %></h1>
+        <p class="mt-2 text-sm text-gray-700"><%= @budget_phase.description %></p>
+      </div>
+      <div class="flex space-x-3">
+        <%= link_to "Edit Phase", edit_budget_budget_phase_path(@budget, @budget_phase), class: "inline-flex items-center px-4 py-2 border border-gray-300 shadow-sm text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500" %>
+        <% if @budget_phase.can_vote? %>
+          <%= link_to "Vote Now", new_budget_budget_phase_budget_vote_path(@budget, @budget_phase), class: "inline-flex items-center px-4 py-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500" %>
+        <% end %>
+      </div>
+    </div>
+  </div>
+
+  <!-- Phase Overview -->
+  <div class="bg-white shadow rounded-lg mb-6">
+    <div class="px-4 py-5 sm:p-6">
+      <h3 class="text-lg leading-6 font-medium text-gray-900 mb-4">Phase Overview</h3>
+      
+      <div class="grid grid-cols-1 gap-5 sm:grid-cols-4">
+        <div class="bg-blue-50 overflow-hidden shadow rounded-lg">
+          <div class="p-5">
+            <div class="flex items-center">
+              <div class="flex-shrink-0">
+                <div class="w-8 h-8 bg-blue-500 rounded-full flex items-center justify-center">
+                  <span class="text-white text-sm font-medium">📊</span>
+                </div>
+              </div>
+              <div class="ml-5 w-0 flex-1">
+                <dl>
+                  <dt class="text-sm font-medium text-gray-500 truncate">Status</dt>
+                  <dd class="text-lg font-medium text-gray-900">
+                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium
+                      <%= case @budget_phase.status
+                          when 'draft'
+                            'bg-gray-100 text-gray-800'
+                          when 'active'
+                            'bg-green-100 text-green-800'
+                          when 'completed'
+                            'bg-blue-100 text-blue-800'
+                          end %>">
+                      <%= @budget_phase.status.titleize %>
+                    </span>
+                  </dd>
+                </dl>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="bg-green-50 overflow-hidden shadow rounded-lg">
+          <div class="p-5">
+            <div class="flex items-center">
+              <div class="flex-shrink-0">
+                <div class="w-8 h-8 bg-green-500 rounded-full flex items-center justify-center">
+                  <span class="text-white text-sm font-medium">🗳️</span>
+                </div>
+              </div>
+              <div class="ml-5 w-0 flex-1">
+                <dl>
+                  <dt class="text-sm font-medium text-gray-500 truncate">Total Votes</dt>
+                  <dd class="text-lg font-medium text-gray-900"><%= @budget_phase.total_votes %></dd>
+                </dl>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="bg-yellow-50 overflow-hidden shadow rounded-lg">
+          <div class="p-5">
+            <div class="flex items-center">
+              <div class="flex-shrink-0">
+                <div class="w-8 h-8 bg-yellow-500 rounded-full flex items-center justify-center">
+                  <span class="text-white text-sm font-medium">📅</span>
+                </div>
+              </div>
+              <div class="ml-5 w-0 flex-1">
+                <dl>
+                  <dt class="text-sm font-medium text-gray-500 truncate">Duration</dt>
+                  <dd class="text-lg font-medium text-gray-900"><%= @budget_phase.duration_days %> days</dd>
+                </dl>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="bg-purple-50 overflow-hidden shadow rounded-lg">
+          <div class="p-5">
+            <div class="flex items-center">
+              <div class="flex-shrink-0">
+                <div class="w-8 h-8 bg-purple-500 rounded-full flex items-center justify-center">
+                  <span class="text-white text-sm font-medium">⏱️</span>
+                </div>
+              </div>
+              <div class="ml-5 w-0 flex-1">
+                <dl>
+                  <dt class="text-sm font-medium text-gray-500 truncate">Progress</dt>
+                  <dd class="text-lg font-medium text-gray-900"><%= @budget_phase.progress_percentage %>%</dd>
+                </dl>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="mt-6">
+        <div class="flex justify-between text-sm mb-2">
+          <span class="text-gray-500">Phase Progress</span>
+          <span class="font-medium text-gray-900"><%= @budget_phase.progress_percentage %>%</span>
+        </div>
+        <div class="w-full bg-gray-200 rounded-full h-3">
+          <div class="bg-blue-600 h-3 rounded-full transition-all duration-300" style="width: <%= @budget_phase.progress_percentage %>%"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Phase Details -->
+  <div class="bg-white shadow rounded-lg mb-6">
+    <div class="px-4 py-5 sm:p-6">
+      <h3 class="text-lg leading-6 font-medium text-gray-900 mb-4">Phase Details</h3>
+      
+      <div class="grid grid-cols-1 gap-6 sm:grid-cols-2">
+        <div>
+          <h4 class="text-sm font-medium text-gray-900 mb-2">Timeline</h4>
+          <div class="space-y-2 text-sm">
+            <div class="flex justify-between">
+              <span class="text-gray-500">Start Date:</span>
+              <span class="font-medium"><%= @budget_phase.start_date.strftime("%B %d, %Y") %></span>
+            </div>
+            <div class="flex justify-between">
+              <span class="text-gray-500">End Date:</span>
+              <span class="font-medium"><%= @budget_phase.end_date.strftime("%B %d, %Y") %></span>
+            </div>
+            <div class="flex justify-between">
+              <span class="text-gray-500">Days Remaining:</span>
+              <span class="font-medium"><%= @budget_phase.days_remaining %></span>
+            </div>
+          </div>
+        </div>
+
+        <div>
+          <h4 class="text-sm font-medium text-gray-900 mb-2">Voting Rules</h4>
+          <p class="text-sm text-gray-600"><%= @budget_phase.voting_rules %></p>
+        </div>
+
+        <div>
+          <h4 class="text-sm font-medium text-gray-900 mb-2">Participant Eligibility</h4>
+          <p class="text-sm text-gray-600"><%= @budget_phase.participant_eligibility %></p>
+        </div>
+
+        <div>
+          <h4 class="text-sm font-medium text-gray-900 mb-2">Voting Status</h4>
+          <div class="space-y-2">
+            <% if @budget_phase.can_vote? %>
+              <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
+                Voting Open
+              </span>
+            <% else %>
+              <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-800">
+                Voting Closed
+              </span>
+            <% end %>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Voting Statistics -->
+  <% if @vote_statistics %>
+    <div class="bg-white shadow rounded-lg mb-6">
+      <div class="px-4 py-5 sm:p-6">
+        <h3 class="text-lg leading-6 font-medium text-gray-900 mb-4">Voting Statistics</h3>
+        
+        <div class="grid grid-cols-1 gap-5 sm:grid-cols-4">
+          <div class="bg-blue-50 overflow-hidden shadow rounded-lg">
+            <div class="p-5">
+              <div class="flex items-center">
+                <div class="flex-shrink-0">
+                  <div class="w-8 h-8 bg-blue-500 rounded-full flex items-center justify-center">
+                    <span class="text-white text-sm font-medium">📊</span>
+                  </div>
+                </div>
+                <div class="ml-5 w-0 flex-1">
+                  <dl>
+                    <dt class="text-sm font-medium text-gray-500 truncate">Total Votes</dt>
+                    <dd class="text-lg font-medium text-gray-900"><%= @vote_statistics[:total_votes] %></dd>
+                  </dl>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="bg-green-50 overflow-hidden shadow rounded-lg">
+            <div class="p-5">
+              <div class="flex items-center">
+                <div class="flex-shrink-0">
+                  <div class="w-8 h-8 bg-green-500 rounded-full flex items-center justify-center">
+                    <span class="text-white text-sm font-medium">👥</span>
+                  </div>
+                </div>
+                <div class="ml-5 w-0 flex-1">
+                  <dl>
+                    <dt class="text-sm font-medium text-gray-500 truncate">Unique Voters</dt>
+                    <dd class="text-lg font-medium text-gray-900"><%= @vote_statistics[:unique_voters] %></dd>
+                  </dl>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="bg-yellow-50 overflow-hidden shadow rounded-lg">
+            <div class="p-5">
+              <div class="flex items-center">
+                <div class="flex-shrink-0">
+                  <div class="w-8 h-8 bg-yellow-500 rounded-full flex items-center justify-center">
+                    <span class="text-white text-sm font-medium">💰</span>
+                  </div>
+                </div>
+                <div class="ml-5 w-0 flex-1">
+                  <dl>
+                    <dt class="text-sm font-medium text-gray-500 truncate">Avg Amount</dt>
+                    <dd class="text-lg font-medium text-gray-900">$<%= number_with_precision(@vote_statistics[:average_amount], precision: 0) %></dd>
+                  </dl>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="bg-purple-50 overflow-hidden shadow rounded-lg">
+            <div class="p-5">
+              <div class="flex items-center">
+                <div class="flex-shrink-0">
+                  <div class="w-8 h-8 bg-purple-500 rounded-full flex items-center justify-center">
+                    <span class="text-white text-sm font-medium">📈</span>
+                  </div>
+                </div>
+                <div class="ml-5 w-0 flex-1">
+                  <dl>
+                    <dt class="text-sm font-medium text-gray-500 truncate">Participation</dt>
+                    <dd class="text-lg font-medium text-gray-900"><%= @vote_statistics[:participation_rate].round(1) %>%</dd>
+                  </dl>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  <% end %>
+
+  <!-- Recent Votes -->
+  <div class="bg-white shadow rounded-lg">
+    <div class="px-4 py-5 sm:p-6">
+      <h3 class="text-lg leading-6 font-medium text-gray-900 mb-4">Recent Votes</h3>
+      
+      <% if @budget_votes.any? %>
+        <div class="overflow-hidden shadow ring-1 ring-black ring-opacity-5 md:rounded-lg">
+          <table class="min-w-full divide-y divide-gray-300">
+            <thead class="bg-gray-50">
+              <tr>
+                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Voter</th>
+                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Email</th>
+                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Vote Summary</th>
+                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Date</th>
+              </tr>
+            </thead>
+            <tbody class="bg-white divide-y divide-gray-200">
+              <% @budget_votes.each do |vote| %>
+                <tr>
+                  <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
+                    <%= vote.voter_name %>
+                  </td>
+                  <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                    <%= vote.voter_email %>
+                  </td>
+                  <td class="px-6 py-4 text-sm text-gray-500">
+                    <%= vote.vote_summary %>
+                  </td>
+                  <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                    <%= vote.created_at.strftime("%B %d, %Y") %>
+                  </td>
+                </tr>
+              <% end %>
+            </tbody>
+          </table>
+        </div>
+      <% else %>
+        <div class="text-center py-8">
+          <div class="mx-auto h-12 w-12 text-gray-400">
+            <svg fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+          </div>
+          <h3 class="mt-2 text-sm font-medium text-gray-900">No votes yet</h3>
+          <p class="mt-1 text-sm text-gray-500">Be the first to vote in this phase!</p>
+          <% if @budget_phase.can_vote? %>
+            <div class="mt-6">
+              <%= link_to "Vote Now", new_budget_budget_phase_budget_vote_path(@budget, @budget_phase), class: "inline-flex items-center px-4 py-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500" %>
+            </div>
+          <% end %>
+        </div>
+      <% end %>
+    </div>
+  </div>
+
+  <div class="mt-8">
+    <%= link_to "Back to Phases", budget_budget_phases_path(@budget), class: "text-blue-600 hover:text-blue-900 text-sm font-medium" %>
+  </div>
+</div>

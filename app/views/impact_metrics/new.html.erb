@@ -1,0 +1,78 @@
+<div class="max-w-2xl mx-auto px-4 sm:px-6 lg:px-8">
+  <div class="mb-6">
+    <h1 class="text-3xl font-bold text-gray-900">Add Impact Assessment</h1>
+    <p class="mt-2 text-sm text-gray-700">
+      <% if @budget_allocation.present? %>
+        Assess the impact of allocation: <%= @budget_allocation.description %>
+      <% else %>
+        Create a new impact metric
+      <% end %>
+    </p>
+  </div>
+
+  <div class="bg-white shadow rounded-lg">
+    <div class="px-4 py-5 sm:p-6">
+      <%= form_with model: @budget_allocation.present? ? [@budget, @budget_allocation, @impact_metric] : @impact_metric, local: true, class: "space-y-6" do |form| %>
+        <% if @impact_metric.errors.any? %>
+          <div class="bg-red-50 border border-red-200 rounded-md p-4">
+            <div class="flex">
+              <div class="flex-shrink-0">
+                <svg class="h-5 w-5 text-red-400" viewBox="0 0 20 20" fill="currentColor">
+                  <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd" />
+                </svg>
+              </div>
+              <div class="ml-3">
+                <h3 class="text-sm font-medium text-red-800">
+                  <%= pluralize(@impact_metric.errors.count, "error") %> prohibited this impact metric from being saved:
+                </h3>
+                <div class="mt-2 text-sm text-red-700">
+                  <ul class="list-disc pl-5 space-y-1">
+                    <% @impact_metric.errors.full_messages.each do |message| %>
+                      <li><%= message %></li>
+                    <% end %>
+                  </ul>
+                </div>
+              </div>
+            </div>
+          </div>
+        <% end %>
+
+        <div>
+          <%= form.label :metric_name, class: "block text-sm font-medium text-gray-700" %>
+          <%= form.text_field :metric_name, class: "mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm" %>
+        </div>
+
+        <div>
+          <%= form.label :metric_type, class: "block text-sm font-medium text-gray-700" %>
+          <%= form.select :metric_type, 
+              options_for_select([
+                ['Beneficiaries (number of people)', 'beneficiaries'],
+                ['Timeline (months)', 'timeline'],
+                ['Sustainability Score (1-10)', 'sustainability'],
+                ['Cost Effectiveness ($/person)', 'cost_effectiveness'],
+                ['Accessibility Score (1-10)', 'accessibility']
+              ], @impact_metric.metric_type),
+              { prompt: "Select metric type" },
+              class: "mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm" %>
+        </div>
+
+        <div>
+          <%= form.label :metric_value, class: "block text-sm font-medium text-gray-700" %>
+          <%= form.number_field :metric_value, step: "0.01", min: "0", class: "mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm" %>
+          <p class="mt-1 text-sm text-gray-500">Enter the numeric value for this impact metric</p>
+        </div>
+
+        <div>
+          <%= form.label :description, class: "block text-sm font-medium text-gray-700" %>
+          <%= form.text_area :description, rows: 3, class: "mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm" %>
+          <p class="mt-1 text-sm text-gray-500">Describe how this metric was calculated or measured</p>
+        </div>
+
+        <div class="flex justify-end space-x-3">
+          <%= link_to "Cancel", @budget.present? ? budget_path(@budget) : impact_metrics_path, class: "inline-flex items-center px-4 py-2 border border-gray-300 shadow-sm text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500" %>
+          <%= form.submit "Create Impact Metric", class: "inline-flex items-center px-4 py-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500" %>
+        </div>
+      <% end %>
+    </div>
+  </div>
+</div>

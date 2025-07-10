@@ -1,0 +1,230 @@
+<div class="px-4 sm:px-6 lg:px-8">
+  <div class="mb-6">
+    <div class="flex items-center justify-between">
+      <div>
+        <h1 class="text-3xl font-bold text-gray-900"><%= @impact_metric.metric_name %></h1>
+        <p class="mt-2 text-sm text-gray-700"><%= @impact_metric.description %></p>
+      </div>
+      <div class="flex space-x-3">
+        <%= link_to "Edit Metric", edit_impact_metric_path(@impact_metric), class: "inline-flex items-center px-4 py-2 border border-gray-300 shadow-sm text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500" %>
+        <%= link_to "Back to Metrics", impact_metrics_path, class: "inline-flex items-center px-4 py-2 border border-gray-300 shadow-sm text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500" %>
+      </div>
+    </div>
+  </div>
+
+  <!-- Metric Overview -->
+  <div class="bg-white shadow rounded-lg mb-6">
+    <div class="px-4 py-5 sm:p-6">
+      <h3 class="text-lg leading-6 font-medium text-gray-900 mb-4">Metric Overview</h3>
+      
+      <div class="grid grid-cols-1 gap-5 sm:grid-cols-3">
+        <div class="bg-blue-50 overflow-hidden shadow rounded-lg">
+          <div class="p-5">
+            <div class="flex items-center">
+              <div class="flex-shrink-0">
+                <div class="w-8 h-8 bg-blue-500 rounded-full flex items-center justify-center">
+                  <span class="text-white text-sm font-medium">📊</span>
+                </div>
+              </div>
+              <div class="ml-5 w-0 flex-1">
+                <dl>
+                  <dt class="text-sm font-medium text-gray-500 truncate">Metric Type</dt>
+                  <dd class="text-lg font-medium text-gray-900"><%= @impact_metric.metric_type.titleize %></dd>
+                </dl>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="bg-green-50 overflow-hidden shadow rounded-lg">
+          <div class="p-5">
+            <div class="flex items-center">
+              <div class="flex-shrink-0">
+                <div class="w-8 h-8 bg-green-500 rounded-full flex items-center justify-center">
+                  <span class="text-white text-sm font-medium">📈</span>
+                </div>
+              </div>
+              <div class="ml-5 w-0 flex-1">
+                <dl>
+                  <dt class="text-sm font-medium text-gray-500 truncate">Value</dt>
+                  <dd class="text-lg font-medium text-gray-900"><%= @impact_metric.formatted_value %></dd>
+                </dl>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="bg-purple-50 overflow-hidden shadow rounded-lg">
+          <div class="p-5">
+            <div class="flex items-center">
+              <div class="flex-shrink-0">
+                <div class="w-8 h-8 bg-purple-500 rounded-full flex items-center justify-center">
+                  <span class="text-white text-sm font-medium">💰</span>
+                </div>
+              </div>
+              <div class="ml-5 w-0 flex-1">
+                <dl>
+                  <dt class="text-sm font-medium text-gray-500 truncate">Allocation</dt>
+                  <dd class="text-lg font-medium text-gray-900"><%= link_to truncate(@impact_metric.budget_allocation.description, length: 30), budget_budget_allocation_path(@impact_metric.budget_allocation.budget, @impact_metric.budget_allocation), class: "text-blue-600 hover:text-blue-900" %></dd>
+                </dl>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Metric Details -->
+  <div class="bg-white shadow rounded-lg mb-6">
+    <div class="px-4 py-5 sm:p-6">
+      <h3 class="text-lg leading-6 font-medium text-gray-900 mb-4">Metric Details</h3>
+      
+      <div class="grid grid-cols-1 gap-6 sm:grid-cols-2">
+        <div>
+          <h4 class="text-sm font-medium text-gray-900 mb-2">Description</h4>
+          <p class="text-sm text-gray-600"><%= @impact_metric.description %></p>
+        </div>
+
+        <div>
+          <h4 class="text-sm font-medium text-gray-900 mb-2">Budget Allocation</h4>
+          <p class="text-sm text-gray-600">
+            <%= link_to @impact_metric.budget_allocation.description, budget_budget_allocation_path(@impact_metric.budget_allocation.budget, @impact_metric.budget_allocation), class: "text-blue-600 hover:text-blue-900" %>
+          </p>
+          <p class="text-xs text-gray-500 mt-1">
+            The budget allocation this metric is associated with
+          </p>
+        </div>
+
+        <div>
+          <h4 class="text-sm font-medium text-gray-900 mb-2">Metric Type</h4>
+          <p class="text-sm text-gray-600">
+            <%= @impact_metric.metric_type.titleize %>
+          </p>
+          <p class="text-xs text-gray-500 mt-1">
+            The type of impact being measured
+          </p>
+        </div>
+
+        <div>
+          <h4 class="text-sm font-medium text-gray-900 mb-2">Metric Value</h4>
+          <p class="text-sm text-gray-600">
+            <%= @impact_metric.formatted_value %>
+          </p>
+          <p class="text-xs text-gray-500 mt-1">
+            The measured value for this impact metric
+          </p>
+        </div>
+
+        <div>
+          <h4 class="text-sm font-medium text-gray-900 mb-2">Created</h4>
+          <p class="text-sm text-gray-600">
+            <%= @impact_metric.created_at.strftime("%B %d, %Y") %>
+          </p>
+          <p class="text-xs text-gray-500 mt-1">
+            Last updated: <%= @impact_metric.updated_at.strftime("%B %d, %Y") %>
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Impact Analysis -->
+  <div class="bg-white shadow rounded-lg mb-6">
+    <div class="px-4 py-5 sm:p-6">
+      <h3 class="text-lg leading-6 font-medium text-gray-900 mb-4">Impact Analysis</h3>
+      
+      <div class="grid grid-cols-1 gap-6 sm:grid-cols-2">
+        <!-- Metric Value Analysis -->
+        <div>
+          <h4 class="text-sm font-medium text-gray-900 mb-3">Metric Value</h4>
+          <div class="bg-blue-50 rounded-lg p-4">
+            <div class="flex items-center justify-between mb-2">
+              <span class="text-sm font-medium text-blue-900">Current Value</span>
+              <span class="text-lg font-bold text-blue-900"><%= @impact_metric.formatted_value %></span>
+            </div>
+            <p class="text-xs text-blue-700">
+              The measured impact value for this metric
+            </p>
+          </div>
+        </div>
+
+        <!-- Metric Type Analysis -->
+        <div>
+          <h4 class="text-sm font-medium text-gray-900 mb-3">Metric Type</h4>
+          <div class="bg-green-50 rounded-lg p-4">
+            <div class="flex items-center justify-between mb-2">
+              <span class="text-sm font-medium text-green-900">Type</span>
+              <span class="text-lg font-bold text-green-900"><%= @impact_metric.metric_type.titleize %></span>
+            </div>
+            <p class="text-xs text-green-700">
+              The type of impact being measured
+            </p>
+          </div>
+        </div>
+
+        <!-- Allocation Context -->
+        <div>
+          <h4 class="text-sm font-medium text-gray-900 mb-3">Budget Allocation</h4>
+          <div class="bg-yellow-50 rounded-lg p-4">
+            <div class="flex items-center justify-between mb-2">
+              <span class="text-sm font-medium text-yellow-900">Allocation</span>
+              <span class="text-lg font-bold text-yellow-900">
+                <%= link_to truncate(@impact_metric.budget_allocation.description, length: 30), budget_budget_allocation_path(@impact_metric.budget_allocation.budget, @impact_metric.budget_allocation), class: "text-blue-600 hover:text-blue-900" %>
+              </span>
+            </div>
+            <p class="text-xs text-yellow-700">
+              The budget allocation this metric tracks
+            </p>
+          </div>
+        </div>
+
+        <!-- Budget Context -->
+        <div>
+          <h4 class="text-sm font-medium text-gray-900 mb-3">Budget Context</h4>
+          <div class="bg-purple-50 rounded-lg p-4">
+            <div class="flex items-center justify-between mb-2">
+              <span class="text-sm font-medium text-purple-900">Budget</span>
+              <span class="text-lg font-bold text-purple-900">
+                <%= link_to @impact_metric.budget_allocation.budget.title, budget_path(@impact_metric.budget_allocation.budget), class: "text-blue-600 hover:text-blue-900" %>
+              </span>
+            </div>
+            <div class="flex items-center justify-between mb-2">
+              <span class="text-sm font-medium text-purple-900">Amount</span>
+              <span class="text-lg font-bold text-purple-900">$<%= number_with_precision(@impact_metric.budget_allocation.amount, precision: 2) %></span>
+            </div>
+            <p class="text-xs text-purple-700">
+              The budget and allocation amount being tracked
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Related Metrics -->
+  <% if @related_metrics.any? %>
+    <div class="bg-white shadow rounded-lg">
+      <div class="px-4 py-5 sm:p-6">
+        <h3 class="text-lg leading-6 font-medium text-gray-900 mb-4">Related Metrics</h3>
+        
+        <div class="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+          <% @related_metrics.each do |metric| %>
+            <div class="border border-gray-200 rounded-lg p-4 hover:bg-gray-50">
+              <div class="flex items-center justify-between mb-2">
+                <h4 class="text-sm font-medium text-gray-900"><%= metric.metric_name %></h4>
+                <span class="text-xs text-gray-500"><%= metric.metric_type.titleize %></span>
+              </div>
+              <p class="text-xs text-gray-600 mb-3"><%= truncate(metric.description, length: 80) %></p>
+              <div class="flex items-center justify-between text-xs">
+                <span class="text-gray-500"><%= metric.formatted_value %></span>
+                <span class="text-gray-500"><%= truncate(metric.budget_allocation.description, length: 20) %></span>
+              </div>
+              <%= link_to "View Details", impact_metric_path(metric), class: "block mt-2 text-xs text-blue-600 hover:text-blue-900" %>
+            </div>
+          <% end %>
+        </div>
+      </div>
+    </div>
+  <% end %>
+</div> 

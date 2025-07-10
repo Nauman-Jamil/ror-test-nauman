@@ -1,0 +1,13 @@
+# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  budget_phase: one
+  voter_name: MyString
+  voter_email: MyString
+  vote_data: 
+
+two:
+  budget_phase: two
+  voter_name: MyString
+  voter_email: MyString
+  vote_data: 

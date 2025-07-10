@@ -1,0 +1,204 @@
+<div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+  <div class="mb-6">
+    <h1 class="text-3xl font-bold text-gray-900">Cast Your Vote</h1>
+    <p class="mt-2 text-sm text-gray-700">Vote for budget allocations in <%= @budget_phase.name %></p>
+  </div>
+
+  <div class="bg-white shadow rounded-lg">
+    <div class="px-4 py-5 sm:p-6">
+      <%= form_with model: [@budget, @budget_phase, @budget_vote], local: true, class: "space-y-6" do |form| %>
+        <% if @budget_vote.errors.any? %>
+          <div class="bg-red-50 border border-red-200 rounded-md p-4">
+            <div class="flex">
+              <div class="flex-shrink-0">
+                <svg class="h-5 w-5 text-red-400" viewBox="0 0 20 20" fill="currentColor">
+                  <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd" />
+                </svg>
+              </div>
+              <div class="ml-3">
+                <h3 class="text-sm font-medium text-red-800">
+                  <%= pluralize(@budget_vote.errors.count, "error") %> prohibited this vote from being saved:
+                </h3>
+                <div class="mt-2 text-sm text-red-700">
+                  <ul class="list-disc pl-5 space-y-1">
+                    <% @budget_vote.errors.full_messages.each do |message| %>
+                      <li><%= message %></li>
+                    <% end %>
+                  </ul>
+                </div>
+              </div>
+            </div>
+          </div>
+        <% end %>
+
+        <!-- Voter Information -->
+        <div class="bg-blue-50 border border-blue-200 rounded-md p-4">
+          <h3 class="text-lg font-medium text-blue-900 mb-2">Voter Information</h3>
+          <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
+            <div>
+              <%= form.label :voter_name, "Your Name", class: "block text-sm font-medium text-blue-700" %>
+              <%= form.text_field :voter_name, class: "mt-1 block w-full border-blue-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm" %>
+            </div>
+            <div>
+              <%= form.label :voter_email, "Your Email", class: "block text-sm font-medium text-blue-700" %>
+              <%= form.email_field :voter_email, class: "mt-1 block w-full border-blue-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm" %>
+            </div>
+          </div>
+        </div>
+
+        <!-- Budget Overview -->
+        <div class="bg-gray-50 border border-gray-200 rounded-md p-4">
+          <h3 class="text-lg font-medium text-gray-900 mb-2">Budget Overview</h3>
+          <div class="grid grid-cols-1 gap-4 sm:grid-cols-3">
+            <div>
+              <span class="text-sm font-medium text-gray-500">Total Budget</span>
+              <p class="text-lg font-bold text-gray-900">$<%= number_with_precision(@budget.total_amount, precision: 0) %></p>
+            </div>
+            <div>
+              <span class="text-sm font-medium text-gray-500">Allocated</span>
+              <p class="text-lg font-bold text-green-600">$<%= number_with_precision(@budget.allocated_amount, precision: 0) %></p>
+            </div>
+            <div>
+              <span class="text-sm font-medium text-gray-500">Remaining</span>
+              <p class="text-lg font-bold text-blue-600">$<%= number_with_precision(@budget.remaining_amount, precision: 0) %></p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Category Allocations -->
+        <div>
+          <h3 class="text-lg font-medium text-gray-900 mb-4">Allocate Your Vote</h3>
+          <p class="text-sm text-gray-600 mb-4">Distribute your vote across budget categories. You can allocate up to $<%= number_with_precision(@budget.remaining_amount, precision: 0) %>.</p>
+          
+          <div class="space-y-4">
+            <% @budget_categories.each do |category| %>
+              <div class="border border-gray-200 rounded-lg p-4">
+                <div class="flex items-center justify-between mb-2">
+                  <h4 class="text-lg font-medium text-gray-900"><%= category.name %></h4>
+                  <span class="text-sm text-gray-500">
+                    Limit: <%= category.spending_limit_percentage %>%
+                  </span>
+                </div>
+                <p class="text-sm text-gray-600 mb-3"><%= category.description %></p>
+                
+                <div class="grid grid-cols-1 gap-4 sm:grid-cols-3">
+                  <div>
+                    <span class="text-sm font-medium text-gray-500">Current Allocation</span>
+                    <p class="text-lg font-bold text-gray-900">$<%= number_with_precision(category.current_allocation, precision: 0) %></p>
+                  </div>
+                  <div>
+                    <span class="text-sm font-medium text-gray-500">Limit Amount</span>
+                    <p class="text-lg font-bold text-orange-600">$<%= number_with_precision(category.limit_amount, precision: 0) %></p>
+                  </div>
+                  <div>
+                    <span class="text-sm font-medium text-gray-500">Available</span>
+                    <p class="text-lg font-bold text-green-600">$<%= number_with_precision(category.available_amount, precision: 0) %></p>
+                  </div>
+                </div>
+
+                <!-- Progress Bar -->
+                <div class="mt-3">
+                  <div class="flex justify-between text-sm mb-1">
+                    <span class="text-gray-500">Category Usage</span>
+                    <span class="font-medium text-gray-900"><%= category.usage_percentage.round(1) %>%</span>
+                  </div>
+                  <div class="w-full bg-gray-200 rounded-full h-2">
+                    <div class="h-2 rounded-full transition-all duration-300 <%= category.usage_percentage >= 90 ? 'bg-red-500' : category.usage_percentage >= 75 ? 'bg-yellow-500' : 'bg-green-500' %>" 
+                         style="width: <%= [category.usage_percentage, 100].min %>%"></div>
+                  </div>
+                </div>
+
+                <!-- Vote Amount Input -->
+                <div class="mt-4">
+                  <%= form.fields_for :vote_allocations do |allocation_form| %>
+                    <% if allocation_form.object.budget_category_id == category.id %>
+                      <div class="flex items-center space-x-3">
+                        <div class="flex-1">
+                          <%= allocation_form.label :amount, "Vote Amount ($)", class: "block text-sm font-medium text-gray-700" %>
+                          <%= allocation_form.number_field :amount, 
+                              min: 0, 
+                              max: category.available_amount,
+                              step: 100,
+                              class: "mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm",
+                              placeholder: "Enter amount" %>
+                        </div>
+                        <div class="flex-shrink-0 pt-6">
+                          <button type="button" 
+                                  class="text-blue-600 hover:text-blue-900 text-sm font-medium"
+                                  onclick="document.getElementById('vote_allocations_attributes_<%= allocation_form.index %>_amount').value = <%= category.available_amount %>">
+                            Max
+                          </button>
+                        </div>
+                      </div>
+                      <%= allocation_form.hidden_field :budget_category_id, value: category.id %>
+                    <% end %>
+                  <% end %>
+                </div>
+              </div>
+            <% end %>
+          </div>
+        </div>
+
+        <!-- Comments -->
+        <div>
+          <%= form.label :comments, "Additional Comments (Optional)", class: "block text-sm font-medium text-gray-700" %>
+          <%= form.text_area :comments, rows: 3, class: "mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm", placeholder: "Share your thoughts about the budget allocation..." %>
+        </div>
+
+        <!-- Vote Summary -->
+        <div class="bg-green-50 border border-green-200 rounded-md p-4">
+          <h3 class="text-lg font-medium text-green-900 mb-2">Vote Summary</h3>
+          <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
+            <div>
+              <span class="text-sm font-medium text-green-700">Total Vote Amount</span>
+              <p class="text-lg font-bold text-green-900" id="total-vote-amount">$0</p>
+            </div>
+            <div>
+              <span class="text-sm font-medium text-green-700">Remaining Budget</span>
+              <p class="text-lg font-bold text-green-900" id="remaining-budget">$<%= number_with_precision(@budget.remaining_amount, precision: 0) %></p>
+            </div>
+          </div>
+        </div>
+
+        <div class="flex justify-end space-x-3">
+          <%= link_to "Cancel", budget_budget_phase_path(@budget, @budget_phase), class: "inline-flex items-center px-4 py-2 border border-gray-300 shadow-sm text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500" %>
+          <%= form.submit "Submit Vote", class: "inline-flex items-center px-4 py-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500" %>
+        </div>
+      <% end %>
+    </div>
+  </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  const amountInputs = document.querySelectorAll('input[type="number"]');
+  const totalVoteAmount = document.getElementById('total-vote-amount');
+  const remainingBudget = document.getElementById('remaining-budget');
+  const maxBudget = <%= @budget.remaining_amount %>;
+
+  function updateTotals() {
+    let total = 0;
+    amountInputs.forEach(input => {
+      total += parseFloat(input.value) || 0;
+    });
+    
+    totalVoteAmount.textContent = '$' + total.toLocaleString();
+    remainingBudget.textContent = '$' + (maxBudget - total).toLocaleString();
+    
+    // Update remaining budget color
+    if (total > maxBudget) {
+      remainingBudget.classList.add('text-red-600');
+      remainingBudget.classList.remove('text-green-900');
+    } else {
+      remainingBudget.classList.remove('text-red-600');
+      remainingBudget.classList.add('text-green-900');
+    }
+  }
+
+  amountInputs.forEach(input => {
+    input.addEventListener('input', updateTotals);
+  });
+
+  updateTotals();
+});
+</script>

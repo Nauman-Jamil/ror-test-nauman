@@ -1,0 +1,177 @@
+# See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
+
+# Dependencies
+/vendor/bundle/
+/.bundle/
+/vendor/cache/
+/vendor/gems/
+/vendor/ruby/
+node_modules/
+jspm_packages/
+
+# Environment variables
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+.env.test
+
+# Database
+/db/*.sqlite3
+/db/*.sqlite3-*
+/db/*.db
+*.sqlite3
+*.sqlite3-*
+*.db
+
+# Logs
+/log/*
+!/log/.keep
+/tmp/*
+!/tmp/.keep
+
+# Runtime data
+/pids/*
+!/pids/
+!/pids/.keep
+/sockets/*
+!/sockets/
+!/sockets/.keep
+
+# Storage
+/storage/*
+!/storage/.keep
+/public/uploads
+
+# Assets
+/public/assets
+/public/packs
+/public/packs-test
+/yarn-error.log
+yarn-debug.log*
+.yarn-integrity
+
+# Coverage directory used by tools like istanbul
+/coverage/
+.coveralls.yml
+
+# nyc test coverage
+.nyc_output
+
+# Optional npm cache directory
+.npm
+
+# Optional eslint cache
+.eslintcache
+
+# Microbundle cache
+.rpt2_cache/
+.rts2_cache_cjs/
+.rts2_cache_es/
+.rts2_cache_umd/
+
+# Optional REPL history
+.node_repl_history
+
+# Output of 'npm pack'
+*.tgz
+
+# parcel-bundler cache (https://parceljs.org/)
+.cache
+.parcel-cache
+
+# Next.js build output
+.next
+
+# Nuxt.js build / generate output
+.nuxt
+dist
+
+# Gatsby files
+.cache/
+
+# Storybook build outputs
+.out
+.storybook-out
+
+# Temporary folders
+tmp/
+temp/
+
+# Editor directories and files
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS generated files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# Rails specific
+/config/master.key
+/config/credentials/*.key
+/config/database.yml
+/config/secrets.yml
+/config/application.yml
+
+# Kamal deployment
+.kamal/
+
+# Docker
+.dockerignore
+
+# Backup files
+*.bak
+*.backup
+*.old
+
+# Compiled files
+*.com
+*.class
+*.dll
+*.exe
+*.o
+*.so
+
+# Packages and Archives
+*.7z
+*.dmg
+*.gz
+*.iso
+*.jar
+*.rar
+*.tar
+*.zip
+*.bz2
+*.xz
+
+# Test coverage
+coverage/
+
+# RSpec
+/spec/reports/
+/spec/examples.txt
+
+# Cucumber
+/cucumber/reports/
+
+# Spring
+/spring/
+
+# Rails cache
+/tmp/cache/
+/tmp/cache/assets/
+
+# Debug files
+.byebug_history
+
+# Local configuration
+config/local_env.yml 

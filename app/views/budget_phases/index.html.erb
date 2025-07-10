@@ -1,0 +1,104 @@
+<div class="px-4 sm:px-6 lg:px-8">
+  <div class="sm:flex sm:items-center">
+    <div class="sm:flex-auto">
+      <h1 class="text-3xl font-bold text-gray-900">Voting Phases</h1>
+      <p class="mt-2 text-sm text-gray-700">Manage multi-phase budget voting for <%= @budget.title %></p>
+    </div>
+    <div class="mt-4 sm:mt-0 sm:ml-16 sm:flex-none">
+      <%= link_to "New Phase", new_budget_budget_phase_path(@budget), class: "inline-flex items-center justify-center rounded-md border border-transparent bg-green-600 px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2 sm:w-auto" %>
+    </div>
+  </div>
+  
+  <div class="mt-8 space-y-6">
+    <% @budget_phases.each do |phase| %>
+      <div class="bg-white overflow-hidden shadow rounded-lg">
+        <div class="px-4 py-5 sm:p-6">
+          <div class="flex items-center justify-between mb-4">
+            <div>
+              <h3 class="text-lg font-medium text-gray-900"><%= phase.name %></h3>
+              <p class="text-sm text-gray-500"><%= phase.description %></p>
+            </div>
+            <div class="flex items-center space-x-2">
+              <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium
+                <%= case phase.status
+                    when 'draft'
+                      'bg-gray-100 text-gray-800'
+                    when 'active'
+                      'bg-green-100 text-green-800'
+                    when 'completed'
+                      'bg-blue-100 text-blue-800'
+                    end %>">
+                <%= phase.status.titleize %>
+              </span>
+              <% if phase.can_vote? %>
+                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-red-100 text-red-800">
+                  Voting Open
+                </span>
+              <% end %>
+            </div>
+          </div>
+          
+          <div class="grid grid-cols-1 gap-4 sm:grid-cols-4">
+            <div class="bg-gray-50 rounded-lg p-3">
+              <dt class="text-sm font-medium text-gray-500">Duration</dt>
+              <dd class="mt-1 text-lg font-semibold text-gray-900"><%= phase.duration_days %> days</dd>
+            </div>
+            
+            <div class="bg-gray-50 rounded-lg p-3">
+              <dt class="text-sm font-medium text-gray-500">Progress</dt>
+              <dd class="mt-1 text-lg font-semibold text-gray-900"><%= phase.progress_percentage %>%</dd>
+            </div>
+            
+            <div class="bg-gray-50 rounded-lg p-3">
+              <dt class="text-sm font-medium text-gray-500">Votes</dt>
+              <dd class="mt-1 text-lg font-semibold text-gray-900"><%= phase.total_votes %></dd>
+            </div>
+            
+            <div class="bg-gray-50 rounded-lg p-3">
+              <dt class="text-sm font-medium text-gray-500">Days Left</dt>
+              <dd class="mt-1 text-lg font-semibold text-gray-900"><%= phase.days_remaining %></dd>
+            </div>
+          </div>
+          
+          <div class="mt-4">
+            <div class="flex justify-between text-sm mb-2">
+              <span class="text-gray-500">Phase Progress</span>
+              <span class="font-medium text-gray-900"><%= phase.progress_percentage %>%</span>
+            </div>
+            <div class="w-full bg-gray-200 rounded-full h-3">
+              <div class="bg-blue-600 h-3 rounded-full transition-all duration-300" style="width: <%= phase.progress_percentage %>%"></div>
+            </div>
+          </div>
+          
+          <div class="mt-4 flex space-x-3">
+            <%= link_to "View Details", budget_budget_phase_path(@budget, phase), class: "text-blue-600 hover:text-blue-900 text-sm font-medium" %>
+            <%= link_to "Edit", edit_budget_budget_phase_path(@budget, phase), class: "text-gray-600 hover:text-gray-900 text-sm font-medium" %>
+            <% if phase.can_vote? %>
+              <%= link_to "Vote Now", new_budget_budget_phase_budget_vote_path(@budget, phase), class: "text-green-600 hover:text-green-900 text-sm font-medium" %>
+            <% end %>
+            <%= link_to "Delete", budget_budget_phase_path(@budget, phase), method: :delete, data: { confirm: "Are you sure?" }, class: "text-red-600 hover:text-red-900 text-sm font-medium" %>
+          </div>
+        </div>
+      </div>
+    <% end %>
+  </div>
+  
+  <% if @budget_phases.empty? %>
+    <div class="text-center py-12">
+      <div class="mx-auto h-12 w-12 text-gray-400">
+        <svg fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+        </svg>
+      </div>
+      <h3 class="mt-2 text-sm font-medium text-gray-900">No voting phases</h3>
+      <p class="mt-1 text-sm text-gray-500">Create voting phases to enable participatory budgeting.</p>
+      <div class="mt-6">
+        <%= link_to "Create Phase", new_budget_budget_phase_path(@budget), class: "inline-flex items-center px-4 py-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500" %>
+      </div>
+    </div>
+  <% end %>
+  
+  <div class="mt-8">
+    <%= link_to "Back to Budget", budget_path(@budget), class: "text-blue-600 hover:text-blue-900 text-sm font-medium" %>
+  </div>
+</div>

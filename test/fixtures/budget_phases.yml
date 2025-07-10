@@ -1,0 +1,21 @@
+# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  budget: one
+  name: MyString
+  description: MyText
+  status: MyString
+  start_date: 2025-07-09
+  end_date: 2025-07-09
+  voting_rules: MyText
+  participant_eligibility: MyText
+
+two:
+  budget: two
+  name: MyString
+  description: MyText
+  status: MyString
+  start_date: 2025-07-09
+  end_date: 2025-07-09
+  voting_rules: MyText
+  participant_eligibility: MyText
