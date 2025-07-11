@@ -175,3 +175,5 @@ coverage/
 
 # Local configuration
 config/local_env.yml 
+/app/assets/builds/*
+!/app/assets/builds/.keep
