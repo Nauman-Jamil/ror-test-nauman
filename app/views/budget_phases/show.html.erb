@@ -117,6 +117,71 @@
     </div>
   </div>
 
+  <!-- Category Voting Summary -->
+  <% if @category_voting_summary.any? %>
+    <div class="bg-white shadow rounded-lg mb-6">
+      <div class="px-4 py-5 sm:p-6">
+        <h3 class="text-lg leading-6 font-medium text-gray-900 mb-4">Category Voting Summary</h3>
+        
+        <div class="overflow-x-auto">
+          <table class="min-w-full divide-y divide-gray-200">
+            <thead class="bg-gray-50">
+              <tr>
+                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Category</th>
+                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Total Amount</th>
+                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Vote Count</th>
+                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Avg Amount</th>
+                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">% of Budget</th>
+                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Limit Status</th>
+              </tr>
+            </thead>
+            <tbody class="bg-white divide-y divide-gray-200">
+              <% @category_voting_summary.each do |category_id, data| %>
+                <% category = data[:category] %>
+                <% current_allocated = @budget.budget_allocations.where(budget_category: category).sum(:amount) %>
+                <% max_allowed = @budget.total_amount * (category.spending_limit_percentage / 100.0) %>
+                <% utilization_rate = max_allowed > 0 ? (current_allocated / max_allowed * 100).round(2) : 0 %>
+                <% over_limit = utilization_rate > category.spending_limit_percentage %>
+                
+                <tr>
+                  <td class="px-6 py-4 whitespace-nowrap">
+                    <div>
+                      <div class="text-sm font-medium text-gray-900"><%= category.name %></div>
+                      <div class="text-sm text-gray-500"><%= category.description %></div>
+                    </div>
+                  </td>
+                  <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                    $<%= number_with_precision(data[:total_amount], precision: 0) %>
+                  </td>
+                  <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                    <%= data[:vote_count] %>
+                  </td>
+                  <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                    $<%= number_with_precision(data[:average_amount], precision: 0) %>
+                  </td>
+                  <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                    <%= data[:percentage_of_budget] %>%
+                  </td>
+                  <td class="px-6 py-4 whitespace-nowrap">
+                    <div class="flex items-center">
+                      <div class="w-16 bg-gray-200 rounded-full h-2 mr-2">
+                        <div class="<%= over_limit ? 'bg-red-600' : 'bg-green-600' %> h-2 rounded-full" 
+                             style="width: <%= [utilization_rate, 100].min %>%"></div>
+                      </div>
+                      <span class="text-sm <%= over_limit ? 'text-red-600 font-medium' : 'text-gray-900' %>">
+                        <%= utilization_rate %>%
+                      </span>
+                    </div>
+                  </td>
+                </tr>
+              <% end %>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  <% end %>
+
   <!-- Phase Details -->
   <div class="bg-white shadow rounded-lg mb-6">
     <div class="px-4 py-5 sm:p-6">
@@ -246,6 +311,54 @@
                 </div>
               </div>
             </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  <% end %>
+
+  <!-- Impact-Based Filtering -->
+  <% if @budget.budget_allocations.with_impact_metrics.any? %>
+    <div class="bg-white shadow rounded-lg mb-6">
+      <div class="px-4 py-5 sm:p-6">
+        <h3 class="text-lg leading-6 font-medium text-gray-900 mb-4">Impact-Based Analysis</h3>
+        
+        <div class="grid grid-cols-1 gap-6 sm:grid-cols-3">
+          <div class="bg-green-50 rounded-lg p-4">
+            <h4 class="text-sm font-medium text-green-900 mb-2">High Impact Projects</h4>
+            <div class="text-2xl font-bold text-green-900">
+              <%= @budget.budget_allocations.high_impact.count %>
+            </div>
+            <p class="text-sm text-green-600">Projects with impact score ≥ 8.0</p>
+          </div>
+          
+          <div class="bg-blue-50 rounded-lg p-4">
+            <h4 class="text-sm font-medium text-blue-900 mb-2">Average Impact Score</h4>
+            <div class="text-2xl font-bold text-blue-900">
+              <%= @budget.average_impact_score.round(1) %>
+            </div>
+            <p class="text-sm text-blue-600">Across all projects</p>
+          </div>
+          
+          <div class="bg-purple-50 rounded-lg p-4">
+            <h4 class="text-sm font-medium text-purple-900 mb-2">Impact Metrics</h4>
+            <div class="text-2xl font-bold text-purple-900">
+              <%= @budget.budget_allocations.joins(:impact_metrics).count %>
+            </div>
+            <p class="text-sm text-purple-600">Total metrics tracked</p>
+          </div>
+        </div>
+        
+        <div class="mt-6">
+          <h4 class="text-sm font-medium text-gray-900 mb-3">Top Impact Categories</h4>
+          <div class="space-y-2">
+            <% @budget.budget_categories.joins(budget_allocations: :impact_metrics).group('budget_categories.id').order('AVG(impact_metrics.metric_value) DESC').limit(3).each do |category| %>
+              <% avg_impact = category.budget_allocations.joins(:impact_metrics).average(:metric_value) || 0 %>
+              <div class="flex justify-between items-center p-2 bg-gray-50 rounded">
+                <span class="text-sm font-medium text-gray-900"><%= category.name %></span>
+                <span class="text-sm text-gray-600">Impact: <%= avg_impact.round(1) %></span>
+              </div>
+            <% end %>
           </div>
         </div>
       </div>

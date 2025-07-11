@@ -72,27 +72,41 @@
           
           <div class="space-y-4">
             <% @budget_categories.each do |category| %>
-              <div class="border border-gray-200 rounded-lg p-4">
+              <% current_allocated = category.budget_allocations.where(budget: @budget).sum(:amount) %>
+              <% max_allowed = @budget.total_amount * (category.spending_limit_percentage / 100.0) %>
+              <% remaining_for_category = [max_allowed - current_allocated, 0].max %>
+              <% utilization_rate = @budget.total_amount > 0 ? (current_allocated / @budget.total_amount * 100).round(2) : 0 %>
+              
+              <div class="border border-gray-200 rounded-lg p-4 category-card" data-category-id="<%= category.id %>">
                 <div class="flex items-center justify-between mb-2">
                   <h4 class="text-lg font-medium text-gray-900"><%= category.name %></h4>
-                  <span class="text-sm text-gray-500">
-                    Limit: <%= category.spending_limit_percentage %>%
-                  </span>
+                  <div class="flex items-center space-x-2">
+                    <span class="text-sm text-gray-500">
+                      Limit: <%= category.spending_limit_percentage %>%
+                    </span>
+                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium
+                      <%= utilization_rate >= category.spending_limit_percentage ? 'bg-red-100 text-red-800' : 
+                          utilization_rate >= category.spending_limit_percentage * 0.8 ? 'bg-yellow-100 text-yellow-800' : 'bg-green-100 text-green-800' %>">
+                      <%= utilization_rate %>%
+                    </span>
+                  </div>
                 </div>
                 <p class="text-sm text-gray-600 mb-3"><%= category.description %></p>
                 
                 <div class="grid grid-cols-1 gap-4 sm:grid-cols-3">
                   <div>
                     <span class="text-sm font-medium text-gray-500">Current Allocation</span>
-                    <p class="text-lg font-bold text-gray-900">$<%= number_with_precision(category.current_allocation, precision: 0) %></p>
+                    <p class="text-lg font-bold text-gray-900">$<%= number_with_precision(current_allocated, precision: 0) %></p>
                   </div>
                   <div>
                     <span class="text-sm font-medium text-gray-500">Limit Amount</span>
-                    <p class="text-lg font-bold text-orange-600">$<%= number_with_precision(category.limit_amount, precision: 0) %></p>
+                    <p class="text-lg font-bold text-orange-600">$<%= number_with_precision(max_allowed, precision: 0) %></p>
                   </div>
                   <div>
                     <span class="text-sm font-medium text-gray-500">Available</span>
-                    <p class="text-lg font-bold text-green-600">$<%= number_with_precision(category.available_amount, precision: 0) %></p>
+                    <p class="text-lg font-bold text-green-600 category-available" data-category-id="<%= category.id %>">
+                      $<%= number_with_precision(remaining_for_category, precision: 0) %>
+                    </p>
                   </div>
                 </div>
 
@@ -100,11 +114,14 @@
                 <div class="mt-3">
                   <div class="flex justify-between text-sm mb-1">
                     <span class="text-gray-500">Category Usage</span>
-                    <span class="font-medium text-gray-900"><%= category.usage_percentage.round(1) %>%</span>
+                    <span class="font-medium text-gray-900 category-usage" data-category-id="<%= category.id %>">
+                      <%= utilization_rate %>%
+                    </span>
                   </div>
                   <div class="w-full bg-gray-200 rounded-full h-2">
-                    <div class="h-2 rounded-full transition-all duration-300 <%= category.usage_percentage >= 90 ? 'bg-red-500' : category.usage_percentage >= 75 ? 'bg-yellow-500' : 'bg-green-500' %>" 
-                         style="width: <%= [category.usage_percentage, 100].min %>%"></div>
+                    <div class="h-2 rounded-full transition-all duration-300 category-progress" 
+                         data-category-id="<%= category.id %>"
+                         style="width: <%= [utilization_rate, 100].min %>%"></div>
                   </div>
                 </div>
 
@@ -117,15 +134,20 @@
                           <%= allocation_form.label :amount, "Vote Amount ($)", class: "block text-sm font-medium text-gray-700" %>
                           <%= allocation_form.number_field :amount, 
                               min: 0, 
-                              max: category.available_amount,
+                              max: remaining_for_category,
                               step: 100,
-                              class: "mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm",
+                              class: "mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm category-input",
+                              data: { category_id: category.id, max_available: remaining_for_category },
                               placeholder: "Enter amount" %>
+                          <div class="mt-1 text-xs text-red-600 category-error" data-category-id="<%= category.id %>" style="display: none;">
+                            Amount exceeds category limit
+                          </div>
                         </div>
                         <div class="flex-shrink-0 pt-6">
                           <button type="button" 
-                                  class="text-blue-600 hover:text-blue-900 text-sm font-medium"
-                                  onclick="document.getElementById('vote_allocations_attributes_<%= allocation_form.index %>_amount').value = <%= category.available_amount %>">
+                                  class="text-blue-600 hover:text-blue-900 text-sm font-medium category-max-btn"
+                                  data-category-id="<%= category.id %>"
+                                  data-max-amount="<%= remaining_for_category %>">
                             Max
                           </button>
                         </div>
@@ -158,6 +180,21 @@
               <p class="text-lg font-bold text-green-900" id="remaining-budget">$<%= number_with_precision(@budget.remaining_amount, precision: 0) %></p>
             </div>
           </div>
+          <div class="mt-3 p-3 bg-yellow-50 border border-yellow-200 rounded-md" id="category-limits-warning" style="display: none;">
+            <div class="flex">
+              <div class="flex-shrink-0">
+                <svg class="h-5 w-5 text-yellow-400" viewBox="0 0 20 20" fill="currentColor">
+                  <path fill-rule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clip-rule="evenodd" />
+                </svg>
+              </div>
+              <div class="ml-3">
+                <h3 class="text-sm font-medium text-yellow-800">Category Limits Warning</h3>
+                <div class="mt-2 text-sm text-yellow-700">
+                  <p>Some categories are approaching or exceeding their spending limits. Please review your allocations.</p>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
 
         <div class="flex justify-end space-x-3">
@@ -171,15 +208,71 @@
 
 <script>
 document.addEventListener('DOMContentLoaded', function() {
-  const amountInputs = document.querySelectorAll('input[type="number"]');
+  const amountInputs = document.querySelectorAll('.category-input');
   const totalVoteAmount = document.getElementById('total-vote-amount');
   const remainingBudget = document.getElementById('remaining-budget');
+  const categoryLimitsWarning = document.getElementById('category-limits-warning');
   const maxBudget = <%= @budget.remaining_amount %>;
+  
+  // Category data for validation
+  const categoryData = {};
+  <% @budget_categories.each do |category| %>
+    <% current_allocated = category.budget_allocations.where(budget: @budget).sum(:amount) %>
+    <% max_allowed = @budget.total_amount * (category.spending_limit_percentage / 100.0) %>
+    categoryData[<%= category.id %>] = {
+      currentAllocated: <%= current_allocated %>,
+      maxAllowed: <%= max_allowed %>,
+      spendingLimitPercentage: <%= category.spending_limit_percentage %>
+    };
+  <% end %>
 
   function updateTotals() {
     let total = 0;
+    let hasCategoryLimitWarning = false;
+    
     amountInputs.forEach(input => {
-      total += parseFloat(input.value) || 0;
+      const amount = parseFloat(input.value) || 0;
+      total += amount;
+      
+      // Check category limits
+      const categoryId = parseInt(input.dataset.categoryId);
+      const category = categoryData[categoryId];
+      if (category) {
+        const newTotal = category.currentAllocated + amount;
+        const utilizationRate = (newTotal / category.maxAllowed * 100);
+        
+        // Update progress bar and usage percentage
+        const progressBar = document.querySelector(`.category-progress[data-category-id="${categoryId}"]`);
+        const usageElement = document.querySelector(`.category-usage[data-category-id="${categoryId}"]`);
+        const availableElement = document.querySelector(`.category-available[data-category-id="${categoryId}"]`);
+        const errorElement = document.querySelector(`.category-error[data-category-id="${categoryId}"]`);
+        
+        if (progressBar) {
+          progressBar.style.width = Math.min(utilizationRate, 100) + '%';
+          progressBar.className = 'h-2 rounded-full transition-all duration-300 ' + 
+            (utilizationRate >= category.spendingLimitPercentage ? 'bg-red-500' : 
+             utilizationRate >= category.spendingLimitPercentage * 0.8 ? 'bg-yellow-500' : 'bg-green-500');
+        }
+        
+        if (usageElement) {
+          usageElement.textContent = utilizationRate.toFixed(1) + '%';
+        }
+        
+        if (availableElement) {
+          const remaining = Math.max(category.maxAllowed - newTotal, 0);
+          availableElement.textContent = '$' + remaining.toLocaleString();
+        }
+        
+        // Show/hide error message
+        if (errorElement) {
+          if (newTotal > category.maxAllowed) {
+            errorElement.style.display = 'block';
+            hasCategoryLimitWarning = true;
+          } else {
+            errorElement.style.display = 'none';
+          }
+        }
+      }
     });
     
     totalVoteAmount.textContent = '$' + total.toLocaleString();
@@ -193,10 +286,31 @@ document.addEventListener('DOMContentLoaded', function() {
       remainingBudget.classList.remove('text-red-600');
       remainingBudget.classList.add('text-green-900');
     }
+    
+    // Show/hide category limits warning
+    if (hasCategoryLimitWarning) {
+      categoryLimitsWarning.style.display = 'block';
+    } else {
+      categoryLimitsWarning.style.display = 'none';
+    }
   }
 
+  // Add event listeners for amount inputs
   amountInputs.forEach(input => {
     input.addEventListener('input', updateTotals);
+  });
+
+  // Add event listeners for max buttons
+  document.querySelectorAll('.category-max-btn').forEach(btn => {
+    btn.addEventListener('click', function() {
+      const categoryId = parseInt(this.dataset.categoryId);
+      const maxAmount = parseFloat(this.dataset.maxAmount);
+      const input = document.querySelector(`.category-input[data-category-id="${categoryId}"]`);
+      if (input) {
+        input.value = maxAmount;
+        updateTotals();
+      }
+    });
   });
 
   updateTotals();

@@ -1,58 +1,89 @@
-# Participatory Budgeting System - Complete Implementation
+# Participatory Budgeting System
 
-A comprehensive Rails-based participatory budgeting system that implements **all three features** from the ROR Contract Hiring Round 2 Assignment 1: Participatory Budgeting Enhancements.
+A comprehensive Rails application for managing participatory budgeting processes with advanced features for budget allocation, multi-phase voting, and impact assessment.
 
-## 🎯 All Features Implemented
+## Features
 
-### ✅ 1. Budget Category Limits & Spending Controls
+### 1. Budget Category Limits & Spending Controls
 
-- **Business Problem**: Organizations need to limit spending within specific budget categories (e.g., maximum 40% for infrastructure, 30% for social programs)
-- **Implementation**:
-  - ✅ Added `spending_limit_percentage` field to budget categories
-  - ✅ Implemented real-time budget allocation validation during voting
-  - ✅ Created admin interface for setting and monitoring category limits
-  - ✅ Added visual indicators showing category utilization rates
-- **Demo Focus**: Show voting process with limit enforcement, admin monitoring dashboard
+**Business Problem**: Organizations need to limit spending within specific budget categories (e.g., maximum 40% for infrastructure, 30% for social programs).
 
-### ✅ 2. Multi-Phase Budget Voting
+**Features Implemented**:
 
-- **Business Problem**: Organizations want to run budget voting in phases (e.g., pre-selection, final voting, implementation tracking)
-- **Implementation**:
-  - ✅ Extended budget component to support multiple voting phases
-  - ✅ Added phase-specific configurations (voting rules, participant eligibility)
-  - ✅ Implemented automatic phase transitions based on conditions
-  - ✅ Created phase-specific reporting and analytics
-- **Demo Focus**: Show phase transitions, different voting behaviors per phase, reporting
+- ✅ `spending_limit_percentage` field on budget categories
+- ✅ Real-time budget allocation validation during voting
+- ✅ Admin interface for setting and monitoring category limits
+- ✅ Visual indicators showing category utilization rates
+- ✅ Category limit enforcement with error messages
+- ✅ Progress bars and color-coded status indicators
 
-### ✅ 3. Budget Impact Assessment Integration
+**Demo Focus**:
 
-- **Business Problem**: Organizations need to collect and display impact metrics for budget proposals
-- **Implementation**:
-  - ✅ Created impact metrics model (estimated beneficiaries, timeline, sustainability score)
-  - ✅ Built impact assessment form for project creators
-  - ✅ Added impact-based filtering and sorting for voters
-  - ✅ Generated impact reports for approved projects
-- **Demo Focus**: Show impact data collection, voter filtering, impact reporting
+- Show voting process with limit enforcement
+- Admin monitoring dashboard with real-time utilization tracking
 
-## 🚀 Quick Start
+### 2. Multi-Phase Budget Voting
+
+**Business Problem**: Organizations want to run budget voting in phases (e.g., pre-selection, final voting, implementation tracking).
+
+**Features Implemented**:
+
+- ✅ Multiple voting phases with different configurations
+- ✅ Phase-specific voting rules and participant eligibility
+- ✅ Automatic phase transitions based on conditions
+- ✅ Phase-specific reporting and analytics
+- ✅ Timeline visualization and progress tracking
+- ✅ Phase status management (draft, active, completed)
+
+**Demo Focus**:
+
+- Show phase transitions and different voting behaviors per phase
+- Comprehensive reporting and analytics dashboard
+
+### 3. Budget Impact Assessment Integration
+
+**Business Problem**: Organizations need to collect and display impact metrics for budget proposals.
+
+**Features Implemented**:
+
+- ✅ Impact metrics model with multiple types (beneficiaries, timeline, sustainability, cost_effectiveness, accessibility)
+- ✅ Impact assessment forms for project creators
+- ✅ Impact-based filtering and sorting for voters
+- ✅ Impact reports for approved projects
+- ✅ Visual impact score indicators
+- ✅ Category and budget-level impact analysis
+
+**Demo Focus**:
+
+- Show impact data collection and voter filtering
+- Comprehensive impact reporting system
+
+## Installation & Setup
 
 ### Prerequisites
 
-- Ruby 3.4.4 or higher
+- Ruby 3.0+
+- Rails 7.0+
 - PostgreSQL
-- Rails 8.0.2
+- Node.js (for asset compilation)
 
-### Installation
+### Setup Instructions
 
-1. **Clone and setup the application:**
+1. **Clone the repository**
 
    ```bash
    git clone <repository-url>
    cd ror-contract
-   bundle install
    ```
 
-2. **Setup the database:**
+2. **Install dependencies**
+
+   ```bash
+   bundle install
+   npm install
+   ```
+
+3. **Database setup**
 
    ```bash
    rails db:create
@@ -60,233 +91,255 @@ A comprehensive Rails-based participatory budgeting system that implements **all
    rails db:seed
    ```
 
-3. **Start the server:**
+4. **Start the server**
 
    ```bash
    rails server
    ```
 
-4. **Visit the application:**
-   Open http://localhost:3000 in your browser
+5. **Visit the application**
+   ```
+   http://localhost:3000
+   ```
 
-## 📊 Demo Data
+## Usage Guide
 
-The system comes pre-loaded with comprehensive sample data:
+### 1. Budget Category Management
 
-### Budget Categories with Limits
+**Access**: Navigate to "Budget Categories" from the main menu.
 
-- **Infrastructure** (40% limit): Roads, bridges, public buildings
-- **Social Programs** (30% limit): Education, healthcare, community services
-- **Environment** (20% limit): Parks, green spaces, environmental protection
-- **Public Safety** (25% limit): Police, fire, emergency services
-- **Culture & Recreation** (15% limit): Libraries, museums, sports facilities
+**Features**:
 
-### Sample Budgets with Phases
+- Create new budget categories with spending limits
+- Set percentage limits (e.g., 40% for infrastructure)
+- Monitor real-time utilization rates
+- View visual progress bars and status indicators
+- Admin dashboard with comprehensive monitoring
 
-- **City Annual Budget 2024** ($1,000,000): Multi-phase participatory budgeting
-- **Community Development Fund** ($250,000): Neighborhood-level initiatives
+**Example Workflow**:
 
-### Multi-Phase Voting Examples
+1. Create "Infrastructure" category with 40% limit
+2. Create "Social Programs" category with 30% limit
+3. Monitor utilization in real-time dashboard
+4. Receive alerts when categories approach limits
 
-- **Proposal Collection Phase**: Citizens submit budget proposals
-- **Final Voting Phase**: Active voting with real-time validation
-- **Implementation Tracking Phase**: Progress monitoring and feedback
+### 2. Multi-Phase Budget Voting
 
-### Impact Assessment Data
+**Access**: Navigate to a budget, then "Budget Phases".
 
-- **Beneficiaries**: Number of people impacted
-- **Timeline**: Implementation duration in months
-- **Sustainability**: Long-term impact scores (1-10)
-- **Cost Effectiveness**: Cost per beneficiary
-- **Accessibility**: Ease of access scores (1-10)
+**Features**:
 
-## 🎮 How to Use
+- Create multiple phases with different rules
+- Set phase-specific voting rules and eligibility
+- Automatic phase transitions
+- Phase-specific analytics and reporting
+- Timeline visualization
 
-### 1. Budget Category Limits
+**Example Workflow**:
 
-- Navigate to "Categories" to see spending limits
-- Create allocations and watch real-time validation
-- See visual indicators when categories exceed limits
-- Monitor utilization rates with progress bars
-
-### 2. Multi-Phase Voting
-
-- Go to any budget and click "Phases"
-- Create different voting phases with specific rules
-- Set participant eligibility and voting rules
-- Watch automatic phase transitions based on dates
-- View voting statistics and participation rates
+1. Create "Proposal Collection" phase (draft)
+2. Create "Final Voting" phase (active)
+3. Create "Implementation Tracking" phase (draft)
+4. Monitor phase progress and transitions
+5. View phase-specific analytics
 
 ### 3. Impact Assessment
 
-- From budget allocations, click "Impact"
-- Add impact metrics for beneficiaries, timeline, sustainability
-- View impact scores and filtering options
-- Generate impact reports for approved projects
+**Access**: Navigate to "Impact Metrics" from the main menu.
 
-### 4. Complete Workflow Demo
+**Features**:
 
-1. **Create Budget**: Set total amount and categories
-2. **Set Category Limits**: Define spending percentages
-3. **Create Phases**: Set up multi-phase voting process
-4. **Add Allocations**: Create budget allocations with validation
-5. **Assess Impact**: Add impact metrics for each allocation
-6. **Vote**: Participate in voting phases with real-time feedback
-7. **Monitor**: Track progress and utilization rates
+- Create impact metrics for budget allocations
+- Multiple metric types: beneficiaries, timeline, sustainability, cost_effectiveness, accessibility
+- Impact-based filtering and sorting
+- Comprehensive impact reports
+- Visual impact score indicators
 
-## 🔧 Technical Implementation
+**Example Workflow**:
 
-### Models & Relationships
+1. Create budget allocation
+2. Add impact metrics (e.g., "50,000 beneficiaries", "18-month timeline")
+3. View impact scores and filtering options
+4. Generate comprehensive impact reports
 
-- **Budget**: Manages budget metadata and total amounts
-- **BudgetCategory**: Defines categories with spending limit percentages
-- **BudgetAllocation**: Links budgets to categories with amounts
-- **BudgetPhase**: Manages multi-phase voting workflows
-- **BudgetVote**: Tracks votes in different phases
-- **ImpactMetric**: Stores impact assessment data
+### 4. Voting Process
 
-### Key Features
+**Access**: Navigate to an active budget phase and click "Vote Now".
 
-```ruby
-# Category limit validation
-def category_limit_not_exceeded
-  unless budget.can_allocate_to_category?(budget_category, amount)
-    errors.add(:amount, "would exceed category limit")
-  end
-end
+**Features**:
 
-# Phase transition logic
-def auto_transition
-  case status
-  when 'draft'
-    update(status: 'active') if start_date <= Date.current
-  when 'active'
-    update(status: 'completed') if end_date < Date.current
-  end
-end
+- Real-time category limit validation
+- Visual progress indicators
+- Category utilization warnings
+- Budget remaining calculations
+- Impact-based project information
 
-# Impact score calculation
-def impact_score
-  metrics = impact_metrics
-  return 0 if metrics.empty?
-  metrics.sum(:metric_value) / metrics.count
-end
-```
+**Example Workflow**:
 
-### Visual Indicators
+1. Enter voter information
+2. Allocate funds across categories
+3. Real-time validation prevents exceeding limits
+4. Submit vote with impact considerations
+5. View voting results and analytics
 
-- Progress bars for budget utilization
-- Color-coded category limits (red for over-limit)
-- Phase status indicators (draft/active/completed)
-- Impact score badges (high/medium/low)
-- Real-time validation feedback
+## Database Schema
 
-## 🎯 Assignment Requirements Met
+### Core Models
 
-### ✅ Business Problems Solved
+**BudgetCategory**
 
-1. **Category Limits**: Organizations can now limit spending within specific budget categories
-2. **Multi-Phase Voting**: Organizations can run budget voting in phases with different rules
-3. **Impact Assessment**: Organizations can collect and display impact metrics for proposals
+- `name`: Category name
+- `description`: Category description
+- `spending_limit_percentage`: Maximum percentage of total budget
 
-### ✅ Technical Implementation
+**Budget**
 
-1. **Category Limits**: Real-time validation, visual indicators, admin controls
-2. **Multi-Phase Voting**: Phase management, automatic transitions, voting analytics
-3. **Impact Assessment**: Impact metrics model, assessment forms, filtering and reporting
+- `title`: Budget title
+- `description`: Budget description
+- `total_amount`: Total budget amount
+- `status`: Budget status (draft, active, completed)
 
-### ✅ Demo Features
+**BudgetPhase**
 
-1. **Voting Process**: Multi-phase voting with limit enforcement
-2. **Admin Monitoring**: Complete dashboard for all features
-3. **Visual Feedback**: Progress bars, color coding, real-time validation
-4. **Impact Reporting**: Comprehensive impact assessment and filtering
+- `name`: Phase name
+- `description`: Phase description
+- `status`: Phase status (draft, active, completed)
+- `start_date`: Phase start date
+- `end_date`: Phase end date
+- `voting_rules`: Phase-specific voting rules
+- `participant_eligibility`: Eligibility criteria
 
-## 🛠 Development
+**BudgetVote**
 
-### Running Tests
+- `voter_name`: Voter's name
+- `voter_email`: Voter's email
+- `comments`: Optional comments
+
+**VoteAllocation**
+
+- `amount`: Amount allocated to category
+- Links vote to budget category
+
+**BudgetAllocation**
+
+- `amount`: Amount allocated
+- `description`: Allocation description
+- Links budget to budget category
+
+**ImpactMetric**
+
+- `metric_name`: Metric name
+- `metric_value`: Metric value
+- `metric_type`: Type (beneficiaries, timeline, sustainability, etc.)
+- `description`: Metric description
+
+## API Endpoints
+
+### Budget Categories
+
+- `GET /budget_categories` - List all categories
+- `GET /budget_categories/:id` - Show category details
+- `POST /budget_categories` - Create new category
+- `PUT /budget_categories/:id` - Update category
+- `DELETE /budget_categories/:id` - Delete category
+
+### Budget Phases
+
+- `GET /budgets/:budget_id/budget_phases` - List phases for budget
+- `GET /budgets/:budget_id/budget_phases/:id` - Show phase details
+- `POST /budgets/:budget_id/budget_phases` - Create new phase
+- `PUT /budgets/:budget_id/budget_phases/:id` - Update phase
+- `PATCH /budgets/:budget_id/budget_phases/:id/transition` - Transition phase
+
+### Budget Votes
+
+- `GET /budgets/:budget_id/budget_phases/:phase_id/budget_votes` - List votes
+- `GET /budgets/:budget_id/budget_phases/:phase_id/budget_votes/new` - New vote form
+- `POST /budgets/:budget_id/budget_phases/:phase_id/budget_votes` - Submit vote
+
+### Impact Metrics
+
+- `GET /impact_metrics` - List all metrics
+- `GET /impact_metrics/report` - Impact report
+- `POST /impact_metrics` - Create new metric
+- `PUT /impact_metrics/:id` - Update metric
+
+## Sample Data
+
+The application includes comprehensive sample data:
+
+### Budget Categories
+
+- Infrastructure (40% limit)
+- Social Programs (30% limit)
+- Environment (20% limit)
+- Public Safety (25% limit)
+- Culture & Recreation (15% limit)
+
+### Sample Budgets
+
+- City Annual Budget 2024 ($1,000,000)
+- Community Development Fund ($250,000)
+
+### Sample Phases
+
+- Proposal Collection (completed)
+- Final Voting (active)
+- Implementation Tracking (draft)
+
+### Sample Votes
+
+- Multiple votes with different allocations
+- Real vote allocations (not just vote_data)
+
+### Sample Impact Metrics
+
+- Beneficiaries, timeline, sustainability scores
+- Cost effectiveness and accessibility metrics
+
+## Testing
+
+Run the test suite:
 
 ```bash
 rails test
 ```
 
-### Code Quality
+## Contributing
 
-```bash
-rubocop
-```
+1. Fork the repository
+2. Create a feature branch
+3. Make your changes
+4. Add tests
+5. Submit a pull request
 
-### Database Reset
+## License
 
-```bash
-rails db:reset  # Drops, recreates, and seeds the database
-```
+This project is licensed under the MIT License.
 
-## 📱 User Interface
+## Support
 
-The application features a modern, responsive interface built with:
-
-- **Tailwind CSS** for styling
-- **Rails 8** with Hotwire for dynamic interactions
-- **PostgreSQL** for data persistence
-- **RESTful routing** for clean URLs
-- **Real-time validation** and feedback
-
-## 🎥 Demo Video Features
-
-The system demonstrates all three assignment features:
-
-### 1. Budget Category Limits & Spending Controls
-
-- Setting up budget categories with percentage limits
-- Creating allocations with real-time validation
-- Visual indicators for category utilization
-- Error messages when limits are exceeded
-
-### 2. Multi-Phase Budget Voting
-
-- Creating different voting phases with specific rules
-- Automatic phase transitions based on dates
-- Voting interface with real-time validation
-- Phase-specific reporting and analytics
-
-### 3. Budget Impact Assessment Integration
-
-- Adding impact metrics for budget allocations
-- Impact-based filtering and sorting
-- Impact score calculations and visual indicators
-- Comprehensive impact reporting
-
-## 📈 System Architecture
-
-### Core Features
-
-- **Budget Management**: Complete CRUD with category limits
-- **Phase Management**: Multi-phase voting workflows
-- **Impact Assessment**: Comprehensive impact metrics
-- **Real-time Validation**: Immediate feedback on all actions
-- **Visual Analytics**: Progress bars, charts, and indicators
-
-### Data Flow
-
-1. **Budget Creation** → Set categories and limits
-2. **Phase Setup** → Configure voting phases
-3. **Allocation Creation** → Add allocations with validation
-4. **Impact Assessment** → Add impact metrics
-5. **Voting Process** → Multi-phase voting with real-time feedback
-6. **Monitoring** → Track progress and utilization
-
-## 🎉 Ready for Submission
-
-- ✅ **Complete Implementation**: All three assignment features implemented
-- ✅ **Public GitHub Repository**: Well-documented and structured code
-- ✅ **Demo Video Ready**: System demonstrates all required features
-- ✅ **Comprehensive README**: Complete setup and feature documentation
-- ✅ **Modern UI/UX**: Professional, responsive interface
-- ✅ **Real-world Data**: Realistic sample data for demonstration
+For support and questions, please open an issue in the repository.
 
 ---
 
-**Built for ROR Contract Hiring Round 2 - Assignment 1: Participatory Budgeting Enhancements**
+**Demo Instructions**:
 
-_All three features successfully implemented and ready for demonstration!_ 🚀
+1. **Category Limits Demo**:
+
+   - Visit Budget Categories page
+   - Show utilization monitoring dashboard
+   - Demonstrate limit enforcement during voting
+
+2. **Multi-Phase Demo**:
+
+   - Show phase timeline and transitions
+   - Demonstrate different voting behaviors per phase
+   - Display comprehensive analytics
+
+3. **Impact Assessment Demo**:
+   - Show impact data collection
+   - Demonstrate voter filtering by impact
+   - Display comprehensive impact reports
+
+All features are fully implemented and working with comprehensive sample data for immediate demonstration.

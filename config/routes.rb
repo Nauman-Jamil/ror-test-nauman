@@ -7,12 +7,22 @@ Rails.application.routes.draw do
       resources :impact_metrics, only: [:new, :create, :edit, :update, :destroy]
     end
     resources :budget_phases, only: [:index, :show, :new, :create, :edit, :update, :destroy] do
+      collection do
+        post :auto_transition
+      end
+      member do
+        patch :transition
+      end
       resources :budget_votes, only: [:new, :create, :index, :show]
     end
   end
   
   resources :budget_categories
-  resources :impact_metrics, only: [:index, :show, :new, :create, :edit, :update, :destroy]
+  resources :impact_metrics, only: [:index, :show, :new, :create, :edit, :update, :destroy] do
+    collection do
+      get :report
+    end
+  end
   
   # Reveal health status on /up that returns 200 if the app boots with no exceptions, otherwise 500.
   # Can be used by load balancers and uptime monitors to verify that the app is live.

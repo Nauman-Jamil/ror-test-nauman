@@ -17,6 +17,10 @@ class Budget < ApplicationRecord
     budget_allocations.sum(:amount)
   end
   
+  def allocated_amount
+    total_allocated
+  end
+  
   def remaining_amount
     total_amount - total_allocated
   end

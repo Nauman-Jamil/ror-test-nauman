@@ -1,0 +1,280 @@
+<div class="px-4 sm:px-6 lg:px-8">
+  <div class="sm:flex sm:items-center">
+    <div class="sm:flex-auto">
+      <h1 class="text-3xl font-bold text-gray-900">Impact Metrics Report</h1>
+      <p class="mt-2 text-sm text-gray-700">Comprehensive analysis of impact metrics across all budget allocations.</p>
+    </div>
+    <div class="mt-4 sm:mt-0 sm:ml-16 sm:flex-none">
+      <%= link_to "Back to Metrics", impact_metrics_path, class: "inline-flex items-center justify-center rounded-md border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 sm:w-auto" %>
+    </div>
+  </div>
+
+  <!-- Overall Statistics -->
+  <div class="mt-8 bg-white shadow rounded-lg">
+    <div class="px-4 py-5 sm:p-6">
+      <h3 class="text-lg font-medium text-gray-900 mb-4">Overall Statistics</h3>
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+        <div class="bg-blue-50 rounded-lg p-4">
+          <div class="flex items-center">
+            <div class="flex-shrink-0">
+              <div class="w-8 h-8 bg-blue-500 rounded-full flex items-center justify-center">
+                <svg class="h-5 w-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+                </svg>
+              </div>
+            </div>
+            <div class="ml-4">
+              <div class="text-sm font-medium text-gray-500">Total Metrics</div>
+              <div class="text-2xl font-bold text-gray-900"><%= @impact_report[:overall_stats][:total_metrics] %></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="bg-green-50 rounded-lg p-4">
+          <div class="flex items-center">
+            <div class="flex-shrink-0">
+              <div class="w-8 h-8 bg-green-500 rounded-full flex items-center justify-center">
+                <svg class="h-5 w-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" />
+                </svg>
+              </div>
+            </div>
+            <div class="ml-4">
+              <div class="text-sm font-medium text-gray-500">Average Value</div>
+              <div class="text-2xl font-bold text-gray-900"><%= @impact_report[:overall_stats][:average_value].round(2) %></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="bg-yellow-50 rounded-lg p-4">
+          <div class="flex items-center">
+            <div class="flex-shrink-0">
+              <div class="w-8 h-8 bg-yellow-500 rounded-full flex items-center justify-center">
+                <svg class="h-5 w-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+              </div>
+            </div>
+            <div class="ml-4">
+              <div class="text-sm font-medium text-gray-500">Value Range</div>
+              <div class="text-2xl font-bold text-gray-900">
+                <%= @impact_report[:overall_stats][:value_range][:min].round(1) %> - <%= @impact_report[:overall_stats][:value_range][:max].round(1) %>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="bg-purple-50 rounded-lg p-4">
+          <div class="flex items-center">
+            <div class="flex-shrink-0">
+              <div class="w-8 h-8 bg-purple-500 rounded-full flex items-center justify-center">
+                <svg class="h-5 w-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 12l3-3 3 3 4-4M8 21l4-4 4 4M3 4h18M4 4h16v12a1 1 0 01-1 1H5a1 1 0 01-1-1V4z" />
+                </svg>
+              </div>
+            </div>
+            <div class="ml-4">
+              <div class="text-sm font-medium text-gray-500">High Impact</div>
+              <div class="text-2xl font-bold text-gray-900"><%= @impact_report[:by_value_level][:high] %></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Impact by Type -->
+  <div class="mt-8 bg-white shadow rounded-lg">
+    <div class="px-4 py-5 sm:p-6">
+      <h3 class="text-lg font-medium text-gray-900 mb-4">Impact by Type</h3>
+      <div class="overflow-x-auto">
+        <table class="min-w-full divide-y divide-gray-200">
+          <thead class="bg-gray-50">
+            <tr>
+              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Metric Type</th>
+              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Count</th>
+              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Average Value</th>
+              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Total Value</th>
+              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Distribution</th>
+            </tr>
+          </thead>
+          <tbody class="bg-white divide-y divide-gray-200">
+            <% @impact_report[:by_type].each do |type_data| %>
+              <tr>
+                <td class="px-6 py-4 whitespace-nowrap">
+                  <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
+                    <%= type_data.metric_type.titleize %>
+                  </span>
+                </td>
+                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                  <%= type_data.count %>
+                </td>
+                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                  <%= type_data.avg_value.round(2) %>
+                </td>
+                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                  <%= type_data.total_value.round(2) %>
+                </td>
+                <td class="px-6 py-4 whitespace-nowrap">
+                  <div class="w-32 bg-gray-200 rounded-full h-2">
+                    <% percentage = @impact_report[:overall_stats][:total_metrics] > 0 ? (type_data.count.to_f / @impact_report[:overall_stats][:total_metrics] * 100).round(1) : 0 %>
+                    <div class="bg-blue-600 h-2 rounded-full" style="width: <%= percentage %>%"></div>
+                  </div>
+                  <div class="text-xs text-gray-500 mt-1"><%= percentage %>%</div>
+                </td>
+              </tr>
+            <% end %>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- Impact by Category -->
+  <% if @category_impact.any? %>
+    <div class="mt-8 bg-white shadow rounded-lg">
+      <div class="px-4 py-5 sm:p-6">
+        <h3 class="text-lg font-medium text-gray-900 mb-4">Impact by Category</h3>
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <% @category_impact.each do |category_name, data| %>
+            <div class="bg-gray-50 rounded-lg p-4">
+              <div class="flex justify-between items-start mb-3">
+                <h4 class="text-lg font-medium text-gray-900"><%= category_name %></h4>
+                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
+                  <%= data[:metric_count] %> metrics
+                </span>
+              </div>
+              
+              <div class="space-y-2">
+                <div class="flex justify-between text-sm">
+                  <span class="text-gray-500">Average Value:</span>
+                  <span class="font-medium text-gray-900"><%= data[:avg_value].round(2) %></span>
+                </div>
+                <div class="flex justify-between text-sm">
+                  <span class="text-gray-500">Total Value:</span>
+                  <span class="font-medium text-gray-900"><%= data[:total_value].round(2) %></span>
+                </div>
+              </div>
+            </div>
+          <% end %>
+        </div>
+      </div>
+    </div>
+  <% end %>
+
+  <!-- Impact by Budget -->
+  <% if @budget_impact.any? %>
+    <div class="mt-8 bg-white shadow rounded-lg">
+      <div class="px-4 py-5 sm:p-6">
+        <h3 class="text-lg font-medium text-gray-900 mb-4">Impact by Budget</h3>
+        <div class="overflow-x-auto">
+          <table class="min-w-full divide-y divide-gray-200">
+            <thead class="bg-gray-50">
+              <tr>
+                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Budget</th>
+                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Metrics</th>
+                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Average Value</th>
+                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Total Value</th>
+                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Performance</th>
+              </tr>
+            </thead>
+            <tbody class="bg-white divide-y divide-gray-200">
+              <% @budget_impact.each do |budget_title, data| %>
+                <tr>
+                  <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
+                    <%= budget_title %>
+                  </td>
+                  <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                    <%= data[:metric_count] %>
+                  </td>
+                  <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                    <%= data[:avg_value].round(2) %>
+                  </td>
+                  <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                    <%= data[:total_value].round(2) %>
+                  </td>
+                  <td class="px-6 py-4 whitespace-nowrap">
+                    <% performance_color = data[:avg_value] >= @impact_report[:overall_stats][:average_value] ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800' %>
+                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium <%= performance_color %>">
+                      <%= data[:avg_value] >= @impact_report[:overall_stats][:average_value] ? 'Above Average' : 'Below Average' %>
+                    </span>
+                  </td>
+                </tr>
+              <% end %>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  <% end %>
+
+  <!-- Value Level Distribution -->
+  <div class="mt-8 bg-white shadow rounded-lg">
+    <div class="px-4 py-5 sm:p-6">
+      <h3 class="text-lg font-medium text-gray-900 mb-4">Value Level Distribution</h3>
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <div class="bg-green-50 rounded-lg p-4">
+          <div class="flex items-center">
+            <div class="flex-shrink-0">
+              <div class="w-8 h-8 bg-green-500 rounded-full flex items-center justify-center">
+                <svg class="h-5 w-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                </svg>
+              </div>
+            </div>
+            <div class="ml-4">
+              <div class="text-sm font-medium text-gray-500">High Impact</div>
+              <div class="text-2xl font-bold text-gray-900"><%= @impact_report[:by_value_level][:high] %></div>
+              <div class="text-xs text-gray-500">
+                <%= @impact_report[:overall_stats][:total_metrics] > 0 ? (@impact_report[:by_value_level][:high].to_f / @impact_report[:overall_stats][:total_metrics] * 100).round(1) : 0 %>%
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="bg-yellow-50 rounded-lg p-4">
+          <div class="flex items-center">
+            <div class="flex-shrink-0">
+              <div class="w-8 h-8 bg-yellow-500 rounded-full flex items-center justify-center">
+                <svg class="h-5 w-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+              </div>
+            </div>
+            <div class="ml-4">
+              <div class="text-sm font-medium text-gray-500">Medium Impact</div>
+              <div class="text-2xl font-bold text-gray-900"><%= @impact_report[:by_value_level][:medium] %></div>
+              <div class="text-xs text-gray-500">
+                <%= @impact_report[:overall_stats][:total_metrics] > 0 ? (@impact_report[:by_value_level][:medium].to_f / @impact_report[:overall_stats][:total_metrics] * 100).round(1) : 0 %>%
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="bg-red-50 rounded-lg p-4">
+          <div class="flex items-center">
+            <div class="flex-shrink-0">
+              <div class="w-8 h-8 bg-red-500 rounded-full flex items-center justify-center">
+                <svg class="h-5 w-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                </svg>
+              </div>
+            </div>
+            <div class="ml-4">
+              <div class="text-sm font-medium text-gray-500">Low Impact</div>
+              <div class="text-2xl font-bold text-gray-900"><%= @impact_report[:by_value_level][:low] %></div>
+              <div class="text-xs text-gray-500">
+                <%= @impact_report[:overall_stats][:total_metrics] > 0 ? (@impact_report[:by_value_level][:low].to_f / @impact_report[:overall_stats][:total_metrics] * 100).round(1) : 0 %>%
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="mt-8 flex space-x-4">
+    <%= link_to "Back to Metrics", impact_metrics_path, class: "inline-flex items-center px-4 py-2 border border-gray-300 shadow-sm text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500" %>
+    <%= link_to "Export Report", "#", class: "inline-flex items-center px-4 py-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500" %>
+  </div>
+</div> 

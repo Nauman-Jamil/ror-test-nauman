@@ -6,6 +6,7 @@ class BudgetVote < ApplicationRecord
   validates :voter_name, presence: true
   validates :voter_email, presence: true, format: { with: URI::MailTo::EMAIL_REGEXP }
   validate :total_amount_within_budget_limit
+  validate :category_limits_not_exceeded
   
   scope :recent, -> { order(created_at: :desc) }
   
@@ -58,6 +59,25 @@ class BudgetVote < ApplicationRecord
     
     if total_amount > remaining_amount
       errors.add(:base, "Total vote amount ($#{total_amount}) exceeds remaining budget ($#{remaining_amount})")
+    end
+  end
+  
+  def category_limits_not_exceeded
+    return if vote_allocations.empty?
+    
+    budget = budget_phase.budget
+    vote_allocations.each do |allocation|
+      category = allocation.budget_category
+      current_allocated = budget.budget_allocations.where(budget_category: category).sum(:amount)
+      proposed_amount = allocation.amount || 0
+      
+      # Calculate what the total would be if this vote is added
+      total_for_category = current_allocated + proposed_amount
+      max_allowed = budget.total_amount * (category.spending_limit_percentage / 100.0)
+      
+      if total_for_category > max_allowed
+        errors.add(:base, "#{category.name} allocation would exceed the #{category.spending_limit_percentage}% limit (max: $#{max_allowed.round(2)})")
+      end
     end
   end
 end

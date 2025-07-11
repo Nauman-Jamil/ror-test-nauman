@@ -12,6 +12,10 @@ class ImpactMetric < ApplicationRecord
   scope :low_value, -> { where('metric_value < ?', 5.0) }
   scope :recent, -> { order(created_at: :desc) }
   
+  def self.metric_types
+    %w[beneficiaries timeline sustainability cost_effectiveness accessibility]
+  end
+  
   def value_level
     case metric_value
     when 0..4 then 'low'

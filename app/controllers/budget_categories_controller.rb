@@ -3,10 +3,14 @@ class BudgetCategoriesController < ApplicationController
 
   def index
     @budget_categories = BudgetCategory.all.order(:name)
+    @budgets = Budget.active
+    @category_utilization = calculate_category_utilization
   end
 
   def show
     @budgets = Budget.active
+    @utilization_data = calculate_utilization_data
+    @recent_allocations = @budget_category.budget_allocations.includes(:budget).order(created_at: :desc).limit(10)
   end
 
   def new
@@ -47,5 +51,35 @@ class BudgetCategoriesController < ApplicationController
 
   def budget_category_params
     params.require(:budget_category).permit(:name, :description, :spending_limit_percentage)
+  end
+  
+  def calculate_category_utilization
+    utilization = {}
+    Budget.active.each do |budget|
+      budget.budget_categories.each do |category|
+        utilization[category.id] ||= {}
+        utilization[category.id][budget.id] = {
+          utilization_rate: category.utilization_rate(budget),
+          remaining_budget: category.remaining_budget(budget),
+          over_limit: category.over_limit?(budget)
+        }
+      end
+    end
+    utilization
+  end
+  
+  def calculate_utilization_data
+    data = {}
+    Budget.active.each do |budget|
+      data[budget.id] = {
+        budget: budget,
+        utilization_rate: @budget_category.utilization_rate(budget),
+        remaining_budget: @budget_category.remaining_budget(budget),
+        over_limit: @budget_category.over_limit?(budget),
+        total_allocated: @budget_category.budget_allocations.where(budget: budget).sum(:amount),
+        max_allowed: budget.total_amount * (@budget_category.spending_limit_percentage / 100.0)
+      }
+    end
+    data
   end
 end

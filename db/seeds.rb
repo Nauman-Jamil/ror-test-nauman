@@ -169,50 +169,114 @@ community_proposal_phase = BudgetPhase.create!(
 
 puts "Created #{BudgetPhase.count} budget phases"
 
-# Create sample votes
+# Create sample votes with proper vote allocations
 puts "Creating sample votes..."
 
-# Votes for the active voting phase
-BudgetVote.create!(
+# Calculate remaining budget for voting
+city_remaining = city_budget.remaining_amount # Should be 50,000 (1M - 950K allocated)
+community_remaining = community_budget.remaining_amount # Should be 112,500 (250K - 137.5K allocated)
+
+# Vote 1: John Smith (City Budget - conservative allocations)
+john_vote = BudgetVote.create!(
   budget_phase: voting_phase,
   voter_name: "John Smith",
-  voter_email: "john.smith@example.com",
-  vote_data: {
-    "allocations" => [
-      { "category" => "Infrastructure", "amount" => 300000, "description" => "Road improvements" },
-      { "category" => "Social Programs", "amount" => 250000, "description" => "Youth programs" },
-      { "category" => "Environment", "amount" => 150000, "description" => "Park improvements" }
-    ]
-  }
+  voter_email: "john.smith@example.com"
 )
 
-BudgetVote.create!(
+VoteAllocation.create!(
+  budget_vote: john_vote,
+  budget_category: infrastructure,
+  amount: 20000.00 # Within remaining budget
+)
+
+VoteAllocation.create!(
+  budget_vote: john_vote,
+  budget_category: culture_recreation,
+  amount: 15000.00 # Within remaining budget
+)
+
+VoteAllocation.create!(
+  budget_vote: john_vote,
+  budget_category: environment,
+  amount: 10000.00 # Within remaining budget
+)
+
+# Vote 2: Sarah Johnson (City Budget - different priorities)
+sarah_vote = BudgetVote.create!(
   budget_phase: voting_phase,
   voter_name: "Sarah Johnson",
-  voter_email: "sarah.johnson@example.com",
-  vote_data: {
-    "allocations" => [
-      { "category" => "Social Programs", "amount" => 300000, "description" => "Healthcare initiatives" },
-      { "category" => "Infrastructure", "amount" => 250000, "description" => "Public transportation" },
-      { "category" => "Public Safety", "amount" => 200000, "description" => "Police training" }
-    ]
-  }
+  voter_email: "sarah.johnson@example.com"
 )
 
-BudgetVote.create!(
+VoteAllocation.create!(
+  budget_vote: sarah_vote,
+  budget_category: public_safety,
+  amount: 25000.00 # Within remaining budget
+)
+
+VoteAllocation.create!(
+  budget_vote: sarah_vote,
+  budget_category: infrastructure,
+  amount: 15000.00 # Within remaining budget
+)
+
+VoteAllocation.create!(
+  budget_vote: sarah_vote,
+  budget_category: culture_recreation,
+  amount: 10000.00 # Within remaining budget
+)
+
+# Vote 3: Mike Davis (City Budget - environment focus)
+mike_vote = BudgetVote.create!(
   budget_phase: voting_phase,
   voter_name: "Mike Davis",
-  voter_email: "mike.davis@example.com",
-  vote_data: {
-    "allocations" => [
-      { "category" => "Environment", "amount" => 200000, "description" => "Green energy projects" },
-      { "category" => "Infrastructure", "amount" => 300000, "description" => "Bridge repairs" },
-      { "category" => "Culture & Recreation", "amount" => 100000, "description" => "Library improvements" }
-    ]
-  }
+  voter_email: "mike.davis@example.com"
 )
 
-puts "Created #{BudgetVote.count} budget votes"
+VoteAllocation.create!(
+  budget_vote: mike_vote,
+  budget_category: environment,
+  amount: 20000.00 # Within remaining budget
+)
+
+VoteAllocation.create!(
+  budget_vote: mike_vote,
+  budget_category: infrastructure,
+  amount: 15000.00 # Within remaining budget
+)
+
+VoteAllocation.create!(
+  budget_vote: mike_vote,
+  budget_category: culture_recreation,
+  amount: 15000.00 # Within remaining budget
+)
+
+# Vote 4: Lisa Chen (Community Budget)
+lisa_vote = BudgetVote.create!(
+  budget_phase: community_proposal_phase,
+  voter_name: "Lisa Chen",
+  voter_email: "lisa.chen@example.com"
+)
+
+VoteAllocation.create!(
+  budget_vote: lisa_vote,
+  budget_category: environment,
+  amount: 20000.00 # Environment has 20% limit, only 10% used, so 25K remaining
+)
+
+VoteAllocation.create!(
+  budget_vote: lisa_vote,
+  budget_category: public_safety,
+  amount: 50000.00 # Public Safety has 25% limit, 0% used in community budget
+)
+
+VoteAllocation.create!(
+  budget_vote: lisa_vote,
+  budget_category: infrastructure,
+  amount: 42500.00 # Infrastructure has 40% limit, 0% used in community budget
+)
+
+puts "Created #{BudgetVote.count} budget votes with #{VoteAllocation.count} vote allocations"
 
 # Create impact metrics
 puts "Creating impact metrics..."
@@ -284,6 +348,23 @@ ImpactMetric.create!(
   description: "Environmental impact score for tree planting initiative"
 )
 
+# Impact metrics for public safety allocation
+ImpactMetric.create!(
+  budget_allocation: safety_allocation,
+  metric_name: "Safety Improvement Score",
+  metric_value: 8.8,
+  metric_type: "accessibility",
+  description: "Community safety improvement rating"
+)
+
+ImpactMetric.create!(
+  budget_allocation: safety_allocation,
+  metric_name: "Response Time Reduction",
+  metric_value: 2.5,
+  metric_type: "timeline",
+  description: "Minutes reduced in emergency response time"
+)
+
 # Impact metrics for community allocations
 ImpactMetric.create!(
   budget_allocation: community_social_allocation,
@@ -301,7 +382,22 @@ ImpactMetric.create!(
   description: "Cultural accessibility and community engagement score"
 )
 
+ImpactMetric.create!(
+  budget_allocation: community_env_allocation,
+  metric_name: "Green Space Impact",
+  metric_value: 7.5,
+  metric_type: "sustainability",
+  description: "Environmental impact of neighborhood green space improvements"
+)
+
 puts "Created #{ImpactMetric.count} impact metrics"
 
 puts "Seed data created successfully!"
 puts "You can now run the application and explore the complete participatory budgeting system."
+puts ""
+puts "Features available:"
+puts "- Budget Category Limits & Spending Controls"
+puts "- Multi-Phase Budget Voting"
+puts "- Budget Impact Assessment Integration"
+puts ""
+puts "Visit http://localhost:3000 to explore the system"

@@ -1,52 +1,79 @@
 <div class="px-4 sm:px-6 lg:px-8">
-  <div class="mb-6">
-    <div class="flex items-center justify-between">
-      <div>
-        <h1 class="text-3xl font-bold text-gray-900">Impact Metrics</h1>
-        <p class="mt-2 text-sm text-gray-700">Track and analyze the impact of budget allocations</p>
-      </div>
-      <%= link_to "Add New Metric", new_impact_metric_path, class: "inline-flex items-center px-4 py-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500" %>
+  <div class="sm:flex sm:items-center">
+    <div class="sm:flex-auto">
+      <h1 class="text-3xl font-bold text-gray-900">Impact Metrics</h1>
+      <p class="mt-2 text-sm text-gray-700">Track and analyze impact metrics for budget allocations.</p>
+    </div>
+    <div class="mt-4 sm:mt-0 sm:ml-16 sm:flex-none">
+      <%= link_to "New Impact Metric", new_impact_metric_path, class: "inline-flex items-center justify-center rounded-md border border-transparent bg-blue-600 px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 sm:w-auto" %>
     </div>
   </div>
 
-  <!-- Impact Overview -->
-  <div class="bg-white shadow rounded-lg mb-6">
+  <!-- Impact Summary Dashboard -->
+  <div class="mt-8 bg-white shadow rounded-lg">
     <div class="px-4 py-5 sm:p-6">
-      <h3 class="text-lg leading-6 font-medium text-gray-900 mb-4">Impact Overview</h3>
-      
-      <div class="grid grid-cols-1 gap-5 sm:grid-cols-4">
-        <div class="bg-blue-50 overflow-hidden shadow rounded-lg">
-          <div class="p-5">
-            <div class="flex items-center">
-              <div class="flex-shrink-0">
-                <div class="w-8 h-8 bg-blue-500 rounded-full flex items-center justify-center">
-                  <span class="text-white text-sm font-medium">📊</span>
-                </div>
+      <h3 class="text-lg font-medium text-gray-900 mb-4">Impact Summary</h3>
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+        <div class="bg-blue-50 rounded-lg p-4">
+          <div class="flex items-center">
+            <div class="flex-shrink-0">
+              <div class="w-8 h-8 bg-blue-500 rounded-full flex items-center justify-center">
+                <svg class="h-5 w-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+                </svg>
               </div>
-              <div class="ml-5 w-0 flex-1">
-                <dl>
-                  <dt class="text-sm font-medium text-gray-500 truncate">Total Metrics</dt>
-                  <dd class="text-lg font-medium text-gray-900"><%= @total_metrics %></dd>
-                </dl>
-              </div>
+            </div>
+            <div class="ml-4">
+              <div class="text-sm font-medium text-gray-500">Total Metrics</div>
+              <div class="text-2xl font-bold text-gray-900"><%= @impact_summary[:total_metrics] %></div>
             </div>
           </div>
         </div>
 
-        <div class="bg-green-50 overflow-hidden shadow rounded-lg">
-          <div class="p-5">
-            <div class="flex items-center">
-              <div class="flex-shrink-0">
-                <div class="w-8 h-8 bg-green-500 rounded-full flex items-center justify-center">
-                  <span class="text-white text-sm font-medium">📈</span>
-                </div>
+        <div class="bg-green-50 rounded-lg p-4">
+          <div class="flex items-center">
+            <div class="flex-shrink-0">
+              <div class="w-8 h-8 bg-green-500 rounded-full flex items-center justify-center">
+                <svg class="h-5 w-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" />
+                </svg>
               </div>
-              <div class="ml-5 w-0 flex-1">
-                <dl>
-                  <dt class="text-sm font-medium text-gray-500 truncate">Avg Value</dt>
-                  <dd class="text-lg font-medium text-gray-900"><%= @average_value.round(1) %></dd>
-                </dl>
+            </div>
+            <div class="ml-4">
+              <div class="text-sm font-medium text-gray-500">Average Value</div>
+              <div class="text-2xl font-bold text-gray-900"><%= @impact_summary[:average_value].round(2) %></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="bg-yellow-50 rounded-lg p-4">
+          <div class="flex items-center">
+            <div class="flex-shrink-0">
+              <div class="w-8 h-8 bg-yellow-500 rounded-full flex items-center justify-center">
+                <svg class="h-5 w-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
               </div>
+            </div>
+            <div class="ml-4">
+              <div class="text-sm font-medium text-gray-500">High Impact</div>
+              <div class="text-2xl font-bold text-gray-900"><%= @impact_summary[:high_value_count] %></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="bg-purple-50 rounded-lg p-4">
+          <div class="flex items-center">
+            <div class="flex-shrink-0">
+              <div class="w-8 h-8 bg-purple-500 rounded-full flex items-center justify-center">
+                <svg class="h-5 w-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 12l3-3 3 3 4-4M8 21l4-4 4 4M3 4h18M4 4h16v12a1 1 0 01-1 1H5a1 1 0 01-1-1V4z" />
+                </svg>
+              </div>
+            </div>
+            <div class="ml-4">
+              <div class="text-sm font-medium text-gray-500">Types</div>
+              <div class="text-2xl font-bold text-gray-900"><%= @impact_summary[:type_distribution].count %></div>
             </div>
           </div>
         </div>
@@ -54,57 +81,125 @@
     </div>
   </div>
 
-  <!-- Metrics List -->
-  <div class="bg-white shadow rounded-lg">
+  <!-- Filters and Sorting -->
+  <div class="mt-8 bg-white shadow rounded-lg">
     <div class="px-4 py-5 sm:p-6">
-      <h3 class="text-lg leading-6 font-medium text-gray-900 mb-4">All Impact Metrics</h3>
-      
+      <h3 class="text-lg font-medium text-gray-900 mb-4">Filters & Sorting</h3>
+      <%= form_with url: impact_metrics_path, method: :get, local: true, class: "space-y-4" do |form| %>
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+          <div>
+            <%= form.label :metric_type, "Metric Type", class: "block text-sm font-medium text-gray-700" %>
+            <%= form.select :metric_type, 
+                options_for_select([
+                  ['All Types', ''],
+                  ['Beneficiaries', 'beneficiaries'],
+                  ['Timeline', 'timeline'],
+                  ['Sustainability', 'sustainability'],
+                  ['Cost Effectiveness', 'cost_effectiveness'],
+                  ['Accessibility', 'accessibility']
+                ], params[:metric_type]), 
+                {}, 
+                class: "mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm rounded-md" %>
+          </div>
+
+          <div>
+            <%= form.label :min_value, "Min Value", class: "block text-sm font-medium text-gray-700" %>
+            <%= form.number_field :min_value, value: params[:min_value], step: 0.1, class: "mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm" %>
+          </div>
+
+          <div>
+            <%= form.label :max_value, "Max Value", class: "block text-sm font-medium text-gray-700" %>
+            <%= form.number_field :max_value, value: params[:max_value], step: 0.1, class: "mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm" %>
+          </div>
+
+          <div>
+            <%= form.label :sort, "Sort By", class: "block text-sm font-medium text-gray-700" %>
+            <%= form.select :sort, 
+                options_for_select([
+                  ['Most Recent', 'recent'],
+                  ['Highest Value', 'value_high'],
+                  ['Lowest Value', 'value_low'],
+                  ['By Type', 'type']
+                ], params[:sort]), 
+                {}, 
+                class: "mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm rounded-md" %>
+          </div>
+        </div>
+
+        <div class="flex space-x-3">
+          <%= form.submit "Apply Filters", class: "inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500" %>
+          <%= link_to "Clear Filters", impact_metrics_path, class: "inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500" %>
+        </div>
+      <% end %>
+    </div>
+  </div>
+
+  <!-- Impact Metrics List -->
+  <div class="mt-8 bg-white shadow rounded-lg">
+    <div class="px-4 py-5 sm:p-6">
+      <div class="flex justify-between items-center mb-4">
+        <h3 class="text-lg font-medium text-gray-900">Impact Metrics (<%= @total_metrics %>)</h3>
+        <%= link_to "Generate Report", report_impact_metrics_path, class: "inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500" %>
+      </div>
+
       <% if @impact_metrics.any? %>
-        <div class="overflow-hidden shadow ring-1 ring-black ring-opacity-5 md:rounded-lg">
-          <table class="min-w-full divide-y divide-gray-300">
+        <div class="overflow-x-auto">
+          <table class="min-w-full divide-y divide-gray-200">
             <thead class="bg-gray-50">
               <tr>
-                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Metric Name</th>
-                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Allocation</th>
+                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Metric</th>
                 <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Type</th>
                 <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Value</th>
-                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Description</th>
+                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Level</th>
+                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Allocation</th>
                 <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
               </tr>
             </thead>
             <tbody class="bg-white divide-y divide-gray-200">
               <% @impact_metrics.each do |metric| %>
-                <tr class="hover:bg-gray-50">
+                <tr>
                   <td class="px-6 py-4 whitespace-nowrap">
-                    <div class="flex items-center">
-                      <div class="flex-shrink-0 h-10 w-10">
-                        <div class="h-10 w-10 rounded-full bg-blue-100 flex items-center justify-center">
-                          <span class="text-blue-600 text-sm font-medium">📊</span>
-                        </div>
+                    <div>
+                      <div class="text-sm font-medium text-gray-900">
+                        <%= link_to metric.metric_name, impact_metric_path(metric), class: "hover:text-blue-600" %>
                       </div>
-                      <div class="ml-4">
-                        <div class="text-sm font-medium text-gray-900"><%= metric.metric_name %></div>
-                        <div class="text-sm text-gray-500"><%= truncate(metric.description, length: 50) %></div>
-                      </div>
+                      <div class="text-sm text-gray-500"><%= truncate(metric.description, length: 50) %></div>
                     </div>
                   </td>
-                  <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                    <%= link_to truncate(metric.budget_allocation.description, length: 30), budget_budget_allocation_path(metric.budget_allocation.budget, metric.budget_allocation), class: "text-blue-600 hover:text-blue-900" %>
-                  </td>
-                  <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                    <%= metric.metric_type.titleize %>
+                  <td class="px-6 py-4 whitespace-nowrap">
+                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
+                      <%= metric.metric_type.titleize %>
+                    </span>
                   </td>
                   <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                    <%= metric.formatted_value %>
+                    <span class="<%= metric.value_color %> font-medium">
+                      <%= metric.formatted_value %>
+                    </span>
                   </td>
-                  <td class="px-6 py-4 text-sm text-gray-500">
-                    <%= truncate(metric.description, length: 50) %>
+                  <td class="px-6 py-4 whitespace-nowrap">
+                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium
+                      <%= case metric.value_level
+                          when 'high'
+                            'bg-green-100 text-green-800'
+                          when 'medium'
+                            'bg-yellow-100 text-yellow-800'
+                          when 'low'
+                            'bg-red-100 text-red-800'
+                          else
+                            'bg-gray-100 text-gray-800'
+                          end %>">
+                      <%= metric.value_level.titleize %>
+                    </span>
+                  </td>
+                  <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                    <%= link_to truncate(metric.budget_allocation.description, length: 30), 
+                        budget_budget_allocation_path(metric.budget_allocation.budget, metric.budget_allocation), 
+                        class: "hover:text-blue-600" %>
                   </td>
                   <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
                     <div class="flex space-x-2">
                       <%= link_to "View", impact_metric_path(metric), class: "text-blue-600 hover:text-blue-900" %>
-                      <%= link_to "Edit", edit_impact_metric_path(metric), class: "text-green-600 hover:text-green-900" %>
-                      <%= link_to "Delete", impact_metric_path(metric), method: :delete, data: { confirm: 'Are you sure?' }, class: "text-red-600 hover:text-red-900" %>
+                      <%= link_to "Edit", edit_impact_metric_path(metric), class: "text-gray-600 hover:text-gray-900" %>
                     </div>
                   </td>
                 </tr>
@@ -112,74 +207,20 @@
             </tbody>
           </table>
         </div>
-
-        <!-- Pagination -->
-        <% if @impact_metrics.respond_to?(:current_page) %>
-          <div class="mt-6">
-            <%= paginate @impact_metrics %>
-          </div>
-        <% end %>
       <% else %>
-        <div class="text-center py-8">
+        <div class="text-center py-12">
           <div class="mx-auto h-12 w-12 text-gray-400">
             <svg fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
             </svg>
           </div>
-          <h3 class="mt-2 text-sm font-medium text-gray-900">No impact metrics yet</h3>
-          <p class="mt-1 text-sm text-gray-500">Start tracking the impact of your budget allocations!</p>
+          <h3 class="mt-2 text-sm font-medium text-gray-900">No impact metrics</h3>
+          <p class="mt-1 text-sm text-gray-500">Get started by creating impact metrics.</p>
           <div class="mt-6">
-            <%= link_to "Add First Metric", new_impact_metric_path, class: "inline-flex items-center px-4 py-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500" %>
+            <%= link_to "New Impact Metric", new_impact_metric_path, class: "inline-flex items-center px-4 py-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500" %>
           </div>
         </div>
       <% end %>
     </div>
   </div>
-
-  <!-- Impact Analysis -->
-  <% if @impact_metrics.any? %>
-    <div class="bg-white shadow rounded-lg mt-6">
-      <div class="px-4 py-5 sm:p-6">
-        <h3 class="text-lg leading-6 font-medium text-gray-900 mb-4">Impact Analysis</h3>
-        
-        <div class="grid grid-cols-1 gap-6 sm:grid-cols-2">
-          <!-- Type Impact -->
-          <div>
-            <h4 class="text-sm font-medium text-gray-900 mb-3">Impact by Type</h4>
-            <div class="space-y-3">
-              <% @type_impact.each do |type_name, data| %>
-                <div class="bg-gray-50 rounded-lg p-3">
-                  <div class="flex justify-between items-center">
-                    <span class="text-sm font-medium text-gray-900"><%= type_name.titleize %></span>
-                    <span class="text-sm text-gray-500"><%= data[:count] %> metrics</span>
-                  </div>
-                  <div class="mt-2">
-                    <div class="flex justify-between text-xs text-gray-500">
-                      <span>Avg Value:</span>
-                      <span class="font-medium"><%= data[:avg_value].round(1) %></span>
-                    </div>
-                  </div>
-                </div>
-              <% end %>
-            </div>
-          </div>
-
-          <!-- Value Distribution -->
-          <div>
-            <h4 class="text-sm font-medium text-gray-900 mb-3">Value Distribution</h4>
-            <div class="space-y-3">
-              <% @value_distribution.each do |value, count| %>
-                <div class="flex items-center justify-between">
-                  <div class="flex items-center">
-                    <span class="text-sm text-gray-600"><%= value %></span>
-                  </div>
-                  <span class="text-sm font-medium text-gray-900"><%= count %> metrics</span>
-                </div>
-              <% end %>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  <% end %>
 </div> 
